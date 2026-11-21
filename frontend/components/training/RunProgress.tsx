@@ -12,9 +12,13 @@ export function RunProgress({ runId }: { runId: string }) {
   const { status, events, error } = useRunStream(runId);
 
   const isFinished = status === 'done' || status === 'error';
-  const lastEvent = events.length > 0 ? events[events.length - 1] : null;
-  
-  const pct = lastEvent ? Math.min(100, Math.round((lastEvent.epoch / lastEvent.epochs) * 100)) : 0;
+  const epochEvents = events.filter((event) => typeof event.epoch === 'number');
+  const lastEvent = epochEvents.length > 0 ? epochEvents[epochEvents.length - 1] : null;
+  const pct = status === 'done'
+    ? 100
+    : lastEvent && lastEvent.epochs > 0
+      ? Math.min(100, Math.round((lastEvent.epoch / lastEvent.epochs) * 100))
+      : 0;
 
   return (
     <div className="flex flex-col h-full space-y-6 animate-in fade-in duration-500">

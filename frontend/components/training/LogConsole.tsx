@@ -15,7 +15,7 @@ export function LogConsole({ events }: { events: StreamEvent[] }) {
   }
 
   // Pega apenas as últimas 100 linhas para não pesar
-  const displayEvents = events.slice(-100);
+  const displayEvents = events.filter((ev) => typeof ev.epoch === "number").slice(-100);
 
   return (
     <div 

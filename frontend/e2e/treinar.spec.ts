@@ -35,7 +35,12 @@ test("treinar com preset rápido e ver resultados", async ({ page }) => {
     route.fulfill({
       status: 200,
       headers: { "Content-Type": "text/event-stream", "Cache-Control": "no-cache" },
-      body: `data: ${JSON.stringify(epoch(1))}\n\ndata: ${JSON.stringify(epoch(2))}\n\n`,
+      body: [
+        `data: ${JSON.stringify({ type: "status", status: "running" })}`,
+        `data: ${JSON.stringify(epoch(1))}`,
+        `data: ${JSON.stringify(epoch(2))}`,
+        `data: ${JSON.stringify({ type: "done", status: "done" })}`,
+      ].join("\n\n") + "\n\n",
     })
   );
 

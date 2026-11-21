@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { getRun } from '../lib/api';
 
 export type StreamEvent = {
@@ -13,6 +13,12 @@ export type StreamEvent = {
   lr: number;
   seconds: number;
   best_epoch: number;
+};
+
+type RawEvent = Partial<StreamEvent> & {
+  type?: string;
+  status?: string;
+  error?: string;
 };
 
 export function useRunStream(runId: string | null) {
@@ -33,53 +39,69 @@ export function useRunStream(runId: string | null) {
     setError(null);
 
     const es = new EventSource(`/api/runs/${runId}/stream`);
-    
+
     es.onopen = () => {
       setStatus('connected');
     };
 
     es.onmessage = (event) => {
       try {
-        const data: StreamEvent = JSON.parse(event.data);
-        setEvents(prev => {
-          // Prevenção contra eventos duplicados
-          if (prev.length > 0 && prev[prev.length - 1].epoch === data.epoch) {
-            return prev;
-          }
-          return [...prev, data];
-        });
+        const data: RawEvent = JSON.parse(event.data);
 
-        if (data.epoch >= data.epochs) {
+        if (data.type === 'status') {
+          setStatus(data.status === 'running' ? 'connected' : 'connecting');
+          return;
+        }
+
+        if (data.type === 'done') {
           setStatus('done');
           es.close();
+          return;
         }
+
+        if (data.type === 'failed' || data.type === 'canceled') {
+          setStatus('error');
+          setError(data.error || `Treinamento ${data.status || data.type}.`);
+          es.close();
+          return;
+        }
+
+        // Eventos de época incluem epoch numérico. Ignora mensagens auxiliares.
+        if (typeof data.epoch !== 'number') return;
+
+        const epochEvent = data as StreamEvent;
+        setEvents((prev) => {
+          if (prev.length > 0 && prev[prev.length - 1].epoch === epochEvent.epoch) {
+            return prev;
+          }
+          return [...prev, epochEvent];
+        });
       } catch (err) {
-        console.error("Erro ao fazer parse da mensagem SSE", err);
+        console.error('Erro ao interpretar evento SSE', err);
       }
     };
 
     es.onerror = async () => {
-      // Verifica na API REST se o run já falhou ou concluiu para decidir entre fallback ou erro definitivo
       try {
         const runData = await getRun(runId);
         if (runData.status === 'done') {
-            setStatus('done');
-            es.close();
-            return;
-        } else if (runData.status === 'failed' || runData.status === 'canceled') {
-            setStatus('error');
-            setError(runData.error || `Run terminou com status: ${runData.status}`);
-            es.close();
-            return;
+          setStatus('done');
+          es.close();
+          return;
+        }
+        if (runData.status === 'failed' || runData.status === 'canceled') {
+          setStatus('error');
+          setError(runData.error || `Run terminou com status: ${runData.status}`);
+          es.close();
+          return;
         }
       } catch {
-         // ignore
+        // mantém a tentativa de reconexão do EventSource
       }
-      
-      // Tentativa de reconexão transparente
+
       if (es.readyState === EventSource.CLOSED) {
-         setStatus('error');
-         setError("Conexão perdida com o servidor de stream.");
+        setStatus('error');
+        setError('Conexão perdida com o servidor de stream.');
       }
     };
 
