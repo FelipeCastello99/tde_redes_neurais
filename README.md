@@ -18,8 +18,8 @@ Samuel Pereira da Silva Varão
 |---|---|---|
 | 0 | Fundação, dataset e validação | ✅ concluída |
 | 1 | Pipeline de dados (`backend/nn/data.py`) | ✅ concluída |
-| 2 | Rede neural (`backend/nn/model.py`) | ⏳ próxima |
-| 3 | Métricas e exportação | ⏳ |
+| 2 | Rede neural (`backend/nn/model.py`) | ✅ concluída |
+| 3 | Métricas e exportação | ⏳ próxima |
 | 4 | Notebook do TDE | ⏳ |
 | 5 | API FastAPI + PostgreSQL | ⏳ |
 | 6 | Frontend Next.js | ⏳ |
