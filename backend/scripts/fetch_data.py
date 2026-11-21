@@ -6,13 +6,13 @@ abertos e, atualmente, hospedado no Google Drive. Como o link pode mudar,
 o script valida o SHA-256 do CSV: se o conteúdo oficial for atualizado,
 use ``--allow-hash-mismatch`` e registre a mudança em ``docs/dataset.md``.
 
-Uso:
+Uso (a partir de ``backend/``, ou ``make fetch`` na raiz):
     python scripts/fetch_data.py            # baixa se necessário e valida
     python scripts/fetch_data.py --check    # só valida o arquivo local
     python scripts/fetch_data.py --force    # baixa de novo
     python scripts/fetch_data.py --keep-zip # mantém o .zip baixado
 
-Saída: data/raw/datatran2024.csv
+Saída: backend/data/raw/datatran2024.csv
 """
 
 from __future__ import annotations
@@ -28,8 +28,8 @@ import zipfile
 from collections import Counter
 from pathlib import Path
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
-DATA_DIR = PROJECT_ROOT / "data" / "raw"
+BACKEND_ROOT = Path(__file__).resolve().parents[1]
+DATA_DIR = BACKEND_ROOT / "data" / "raw"
 CSV_PATH = DATA_DIR / "datatran2024.csv"
 ZIP_PATH = DATA_DIR / "prf_datatran2024.zip"
 

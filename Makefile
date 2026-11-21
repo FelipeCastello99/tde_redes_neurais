@@ -1,35 +1,47 @@
 SHELL := /bin/bash
 PY ?= python3
-
-DATA := data/raw/datatran2024.csv
+VENV := .venv
+BACKEND := backend
 
 .DEFAULT_GOAL := help
 
-.PHONY: help fetch data-check venv install clean-pyc
+.PHONY: help fetch data-check venv install test lint typecheck clean-pyc
 
 help:
 	@echo "TDE Redes Neurais — alvos disponíveis:"
 	@echo "  make fetch       Baixa e valida o CSV do DATATRAN 2024"
 	@echo "  make data-check  Valida apenas o CSV local"
-	@echo "  make venv        Cria o ambiente virtual .venv"
-	@echo "  make install     Instala o projeto e as dependências de desenvolvimento"
+	@echo "  make venv        Cria o ambiente virtual .venv na raiz"
+	@echo "  make install     Instala o backend e as dependências de desenvolvimento"
+	@echo "  make test        Roda o pytest do backend"
+	@echo "  make lint        Roda o ruff no backend"
+	@echo "  make typecheck   Roda o mypy no núcleo e na API"
 	@echo "  make clean-pyc   Remove caches do Python"
 
 fetch:
-	$(PY) scripts/fetch_data.py --force
+	cd $(BACKEND) && $(PY) scripts/fetch_data.py --force
 
 data-check:
-	$(PY) scripts/fetch_data.py --check
+	cd $(BACKEND) && $(PY) scripts/fetch_data.py --check
 
 venv:
-	$(PY) -m venv .venv
+	$(PY) -m venv $(VENV)
 
 install: venv
-	.venv/bin/pip install --upgrade pip
-	.venv/bin/pip install -e ".[dev]"
-	@echo "Ambiente pronto. Ative com: source .venv/bin/activate"
+	$(VENV)/bin/pip install --upgrade pip
+	cd $(BACKEND) && ../$(VENV)/bin/pip install -e ".[dev]"
+	@echo "Ambiente pronto. Ative com: source $(VENV)/bin/activate"
+
+test:
+	cd $(BACKEND) && ../$(VENV)/bin/pytest -q
+
+lint:
+	cd $(BACKEND) && ../$(VENV)/bin/ruff check .
+
+typecheck:
+	cd $(BACKEND) && ../$(VENV)/bin/mypy nn api
 
 clean-pyc:
-	find . -type d -name __pycache__ -prune -exec rm -rf {} +
-	find . -type d -name '*.egg-info' -prune -exec rm -rf {} +
-	rm -rf .pytest_cache .mypy_cache .ruff_cache
+	find $(BACKEND) -type d -name __pycache__ -prune -exec rm -rf {} +
+	find $(BACKEND) -type d -name '*.egg-info' -prune -exec rm -rf {} +
+	rm -rf .pytest_cache .mypy_cache .ruff_cache $(BACKEND)/.pytest_cache $(BACKEND)/.mypy_cache $(BACKEND)/.ruff_cache

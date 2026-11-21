@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "tde-redes-neurais"
 version = "0.1.0"
 description = "TDE de Redes Neurais: MLP do zero em NumPy aplicada a acidentes em rodovias federais (PRF/DATATRAN)"
-readme = "README.md"
+readme = { text = "Backend do TDE: núcleo NumPy (nn) e API FastAPI para treino, histórico e simulador.", content-type = "text/markdown" }
 requires-python = ">=3.12"
 authors = [
     { name = "Felipe Medeiros Castello Branco" },

@@ -1,3 +1,4 @@
+.specs
 .spec
 
 # Python
@@ -14,11 +15,11 @@ build/
 .coverage
 htmlcov/
 
-# Dados e artefatos (grandes; baixados por scripts/fetch_data.py)
-data/raw/*.csv
-data/raw/*.zip
-data/raw/*.part
-artifacts/
+# Dados e artefatos do backend (grandes; baixados por scripts/fetch_data.py)
+backend/data/raw/*.csv
+backend/data/raw/*.zip
+backend/data/raw/*.part
+backend/artifacts/
 
 # Node / Next
 node_modules/

@@ -86,7 +86,7 @@ def load_raw(path: str | Path | None = None) -> pd.DataFrame:
     Parameters
     ----------
     path:
-        Caminho do CSV. Por padrão, ``data/raw/datatran2024.csv``.
+        Caminho do CSV. Por padrão, ``backend/data/raw/datatran2024.csv``.
 
     Returns
     -------

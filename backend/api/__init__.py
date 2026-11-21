@@ -1,7 +1,7 @@
 """API FastAPI do TDE (treino, histórico e simulador).
 
 A API é a fonte única da verdade do projeto: importa ``nn`` para treinar
-e serve o frontend Next.js em ``web/``.
+e serve o frontend Next.js em ``frontend/``.
 
 Módulos previstos (Fase 5):
     main     — rotas REST e SSE

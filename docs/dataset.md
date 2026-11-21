@@ -24,7 +24,7 @@
 > usado pelo script é
 > `https://drive.google.com/uc?export=download&id=14lB0vqMFkaZj8HZ44b0njYgxs9nAN8KO`.
 > Se ele mudar, baixe manualmente pela página oficial e coloque o CSV em
-> `data/raw/datatran2024.csv`.
+> `backend/data/raw/datatran2024.csv`.
 
 ## 2. Integridade e reprodutibilidade
 
@@ -35,8 +35,8 @@
 | SHA-256 do ZIP oficial | `905dac836867297b261e4edefff6cdb470809814e7e1796b3f2f57517099d165` |
 | Registros | 73.202 no arquivo; **73.201 usados** após descartar 1 linha com alvo `NA` |
 | Colunas | 30 |
-| Download | `make fetch` (ou `python scripts/fetch_data.py`) |
-| Verificação | `make data-check` (ou `python scripts/fetch_data.py --check`) |
+| Download | `make fetch` (ou `cd backend && python scripts/fetch_data.py`) |
+| Verificação | `make data-check` (ou `cd backend && python scripts/fetch_data.py --check`) |
 
 O script valida hash, tamanho, cabeçalho exato, contagem de linhas e
 balanceamento do alvo. Se a PRF publicar uma revisão do arquivo, rode com
@@ -60,7 +60,7 @@ Leitura recomendada:
 import pandas as pd
 
 df = pd.read_csv(
-    "data/raw/datatran2024.csv",
+    "backend/data/raw/datatran2024.csv",
     sep=";",
     encoding="latin-1",
     decimal=",",          # km, latitude e longitude
@@ -138,7 +138,7 @@ y = (df["mortos"] > 0).astype("int8")
 - Classe 0 (`sem_vitima_fatal`): 67.976 (92,9%)
 - Classe 1 (`vitima_fatal`): 5.225 (7,1%)
 
-> O pipeline (`nn/data.py::load_raw`) descarta o registro com
+> O pipeline (`backend/nn/data.py::load_raw`) descarta o registro com
 > `classificacao_acidente = "NA"`, então ambas as formulações usam as mesmas
 > 73.201 ocorrências. Isso mantém os dois alvos comparáveis.
 

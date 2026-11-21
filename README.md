@@ -17,8 +17,8 @@ Samuel Pereira da Silva Varão
 | Fase | Entrega | Situação |
 |---|---|---|
 | 0 | Fundação, dataset e validação | ✅ concluída |
-| 1 | Pipeline de dados (`nn/data.py`) | ✅ concluída |
-| 2 | Rede neural (`nn/model.py`) | ⏳ próxima |
+| 1 | Pipeline de dados (`backend/nn/data.py`) | ✅ concluída |
+| 2 | Rede neural (`backend/nn/model.py`) | ⏳ próxima |
 | 3 | Métricas e exportação | ⏳ |
 | 4 | Notebook do TDE | ⏳ |
 | 5 | API FastAPI + PostgreSQL | ⏳ |
@@ -26,8 +26,10 @@ Samuel Pereira da Silva Varão
 | 7 | Docker Compose (raiz) | ⏳ |
 | 8 | Documento, ensaio e entrega | ⏳ |
 
-Detalhes em [`.spec/backend.md`](.spec/backend.md), [`.spec/frontend.md`](.spec/frontend.md)
-e controle em [`.spec/checklist.md`](.spec/checklist.md).
+Detalhes em [`.specs/backend.md`](.specs/backend.md),
+[`.specs/frontend.md`](.specs/frontend.md) e controle em
+[`.specs/checklist.md`](.specs/checklist.md). A pasta `.specs/` é local e não
+versionada.
 
 ## Dataset
 
@@ -36,22 +38,35 @@ DATATRAN 2024 da PRF — 73.202 ocorrências, 30 colunas, alvo desbalanceado
 [`docs/dataset.md`](docs/dataset.md).
 
 ```bash
-make fetch        # baixa e valida o CSV (data/raw/datatran2024.csv)
+make fetch        # baixa e valida o CSV em backend/data/raw/datatran2024.csv
 make data-check   # apenas valida o arquivo local
 ```
 
 ## Estrutura
 
+O repositório separa o backend Python do frontend Next.js. Arquivos de
+orquestração e documentação compartilhada ficam na raiz.
+
 ```
-nn/            núcleo NumPy (modelo, dados, métricas, exportação)
-api/           FastAPI (treino, histórico, SSE, simulador)
-web/           Next.js (a partir da Fase 6)
-notebooks/     notebook do TDE
-scripts/       download/validação e seed de demonstração
-docs/          documentação e documento explicativo
-tests/         testes unitários e de integração
-data/raw/      CSV baixado (não versionado)
-artifacts/     runs, pesos e curvas (não versionado)
+backend/                 API e núcleo de rede neural (Python)
+├── nn/                  modelo, dados, métricas e exportação (NumPy)
+├── api/                 FastAPI: treino, histórico, SSE e simulador
+├── scripts/             download/validação e seed de demonstração
+├── tests/               testes unitários e de integração
+├── notebooks/           notebook do TDE
+├── data/raw/            CSV baixado (não versionado)
+├── artifacts/           runs, pesos e curvas (não versionado)
+└── pyproject.toml       dependências e configuração de testes/lint/mypy
+
+frontend/                Next.js (a partir da Fase 6)
+
+docs/                    dicionário do dataset e documento explicativo
+.specs/                  especificação, checklist e materiais de apoio (local)
+
+README.md
+Makefile
+.gitignore
+docker-compose.yml       (Fase 7: db + api + web)
 ```
 
 ## Ambiente
@@ -59,8 +74,11 @@ artifacts/     runs, pesos e curvas (não versionado)
 Requisitos: Python 3.12+, Docker 29+ e Docker Compose v2+.
 
 ```bash
-make venv         # cria .venv
-make install      # instala o projeto + dependências de desenvolvimento
+make venv         # cria .venv na raiz
+make install      # instala o backend + dependências de desenvolvimento
+make test         # pytest do backend
+make lint         # ruff
+make typecheck    # mypy em nn/ e api/
 ```
 
 ## Roadmap

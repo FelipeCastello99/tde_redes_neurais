@@ -13,9 +13,10 @@ from pathlib import Path
 
 import numpy as np
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
-DATA_DIR = PROJECT_ROOT / "data" / "raw"
-ARTIFACTS_DIR = PROJECT_ROOT / "artifacts"
+BACKEND_ROOT = Path(__file__).resolve().parents[1]
+PROJECT_ROOT = BACKEND_ROOT.parent
+DATA_DIR = BACKEND_ROOT / "data" / "raw"
+ARTIFACTS_DIR = BACKEND_ROOT / "artifacts"
 
 
 def set_seed(seed: int) -> np.random.Generator:
@@ -48,9 +49,9 @@ def set_seed(seed: int) -> np.random.Generator:
 
 
 def relative_path(path: str | Path) -> str:
-    """Devolve o caminho relativo à raiz do projeto (para logs legíveis)."""
+    """Devolve o caminho relativo à raiz do backend (para logs legíveis)."""
     path = Path(path)
     try:
-        return str(path.resolve().relative_to(PROJECT_ROOT))
+        return str(path.resolve().relative_to(BACKEND_ROOT))
     except ValueError:
         return str(path)
