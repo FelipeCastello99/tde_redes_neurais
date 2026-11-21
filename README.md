@@ -20,8 +20,8 @@ Samuel Pereira da Silva Varão
 | 1 | Pipeline de dados (`backend/nn/data.py`) | ✅ concluída |
 | 2 | Rede neural (`backend/nn/model.py`) | ✅ concluída |
 | 3 | Métricas e exportação | ✅ concluída |
-| 4 | Notebook do TDE | ⏳ próxima |
-| 5 | API FastAPI + PostgreSQL | ⏳ |
+| 4 | Notebook do TDE | ✅ concluída |
+| 5 | API FastAPI + PostgreSQL | ⏳ próxima |
 | 6 | Frontend Next.js | ⏳ |
 | 7 | Docker Compose (raiz) | ⏳ |
 | 8 | Documento, ensaio e entrega | ⏳ |
