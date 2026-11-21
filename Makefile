@@ -6,7 +6,7 @@ COMPOSE ?= docker compose
 
 .DEFAULT_GOAL := help
 
-.PHONY: help fetch data-check venv install test lint typecheck types up down build logs ps db-shell reset-db seed deliverables screenshots package clean clean-pyc
+.PHONY: help fetch data-check venv install test lint typecheck types up down refresh build logs ps db-shell reset-db seed deliverables screenshots package clean clean-pyc
 
 help:
 	@echo "TDE Redes Neurais — alvos disponíveis:"
@@ -20,6 +20,7 @@ help:
 	@echo "  make types       Gera openapi.json e os tipos TypeScript do frontend"
 	@echo "  make up          Sobe db + api + web (build incluso)"
 	@echo "  make down        Derruba os containers"
+	@echo "  make refresh     Recria tudo do zero preservando pgdata/artifacts"
 	@echo "  make build       Reconstrói as imagens"
 	@echo "  make logs        Acompanha os logs dos serviços"
 	@echo "  make ps          Mostra o estado dos serviços"
@@ -64,6 +65,10 @@ up:
 
 down:
 	$(COMPOSE) down
+
+refresh:
+	$(COMPOSE) down --remove-orphans
+	$(COMPOSE) up -d --build --force-recreate
 
 build:
 	$(COMPOSE) build

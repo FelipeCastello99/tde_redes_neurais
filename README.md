@@ -145,6 +145,22 @@ cd frontend && npm install && npm run dev
 
 ## Troubleshooting
 
+**`dependency db failed to start` / container sem rede ou sem portas** — quase sempre é
+resíduo de um `up` interrompido. Recrie a stack preservando os dados:
+
+```bash
+make refresh
+```
+
+Se persistir, veja o erro real do banco:
+
+```bash
+docker compose ps -a
+docker compose logs db --tail=80
+docker compose down --remove-orphans
+make up
+```
+
 **Porta 5432 ocupada** — outro Postgres local está rodando. Altere no `.env`:
 
 ```env
