@@ -7,6 +7,8 @@ import { PageHeader } from "@/components/layout";
 import { createRun } from "@/lib/api";
 import { Icons } from "@/components/icons";
 
+import { RunProgress } from "@/components/training/RunProgress";
+
 export default function TreinarPage() {
   const [activeRunId, setActiveRunId] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -56,10 +58,7 @@ export default function TreinarPage() {
               </div>
             ) : (
               <div className="flex-1">
-                {/* Aqui entrará o componente RunStream */}
-                <div className="animate-pulse bg-panel-2 rounded-md h-full w-full flex items-center justify-center text-muted text-sm">
-                  Conectando...
-                </div>
+                <RunProgress runId={activeRunId} />
               </div>
             )}
           </div>
