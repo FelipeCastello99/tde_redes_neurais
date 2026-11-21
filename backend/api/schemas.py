@@ -21,11 +21,21 @@ class RunCreate(BaseModel):
         return v
 
 
+class EstimateRequest(BaseModel):
+    data: dict[str, Any]
+    model: dict[str, Any]
+
+
+class PredictRequest(BaseModel):
+    run_id: UUID
+    features: dict[str, Any]
+
+
 class RunStatus(BaseModel):
     run_id: UUID
     name: str
     status: Literal["queued", "running", "done", "canceled", "failed"]
-    created_at: str
+    created_at: str | None = None
 
 
 class RunDetail(RunStatus):
