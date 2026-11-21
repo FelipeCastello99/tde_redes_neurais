@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ParameterForm } from "@/components/form/ParameterForm";
 import { RunCreate } from "@/lib/validation";
 import { PageHeader } from "@/components/layout";
-import { createRun } from "@/lib/api";
+import { createRun, getRun } from "@/lib/api";
 import { Icons } from "@/components/icons";
+import { defaultDataConfig, defaultModelConfig } from "@/lib/presets";
 
 import { RunProgress } from "@/components/training/RunProgress";
 
@@ -13,6 +14,23 @@ export default function TreinarPage() {
   const [activeRunId, setActiveRunId] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [initialValues, setInitialValues] = useState<RunCreate | null>(null);
+
+  useEffect(() => {
+    const from = new URLSearchParams(window.location.search).get("from");
+    if (!from) return;
+    getRun(from)
+      .then((run) => {
+        setInitialValues({
+          name: `${run.name} (repetição)`,
+          data: { ...defaultDataConfig, ...run.config.data },
+          model: { ...defaultModelConfig, ...run.config.model },
+        });
+      })
+      .catch(() => {
+        // Se o run não existir, mantém o formulário padrão.
+      });
+  }, []);
 
   const onSubmit = async (data: RunCreate) => {
     setIsSubmitting(true);
@@ -43,7 +61,7 @@ export default function TreinarPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 relative">
         <div className="lg:col-span-6 xl:col-span-5">
-          <ParameterForm onSubmit={onSubmit} isSubmitting={isSubmitting} />
+          <ParameterForm onSubmit={onSubmit} isSubmitting={isSubmitting} initialValues={initialValues} />
         </div>
         
         <div className="lg:col-span-6 xl:col-span-7">

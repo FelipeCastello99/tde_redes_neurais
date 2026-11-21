@@ -1,12 +1,13 @@
 import asyncio
 import uuid
-from typing import Any, Callable
-from sqlalchemy.orm import Session
-from api import store, db
+from collections.abc import Callable
+from typing import Any
+
+from api import db, store
 from nn.config import DataConfig, ModelConfig
 from nn.data import prepare_dataset
-from nn.model import NnModel
 from nn.export import export_model, export_npz, export_run_manifest
+from nn.model import NnModel
 
 # Fila simples de treino em memória (fila de 1)
 # Para produção, usaríamos Celery ou RabbitMQ, mas para o TDE um worker dedicado basta.

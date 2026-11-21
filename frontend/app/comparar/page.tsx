@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { getRuns } from "@/lib/api";
 import { PageHeader } from "@/components/layout";
-import { Icons } from "@/components/icons";
 import { formatPercent, formatTime } from "@/lib/format";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Legend, CartesianGrid } from "recharts";
 
@@ -27,6 +26,18 @@ export default function CompararPage() {
     }
     load();
   }, []);
+
+  useEffect(() => {
+    if (runs.length === 0) return;
+    try {
+      const raw = new URLSearchParams(window.location.search).get("ids");
+      if (!raw) return;
+      const valid = raw.split(",").filter((id) => runs.some((run) => run.id === id));
+      if (valid.length > 0) setSelectedIds(valid.slice(0, 4));
+    } catch {
+      // URL indisponível
+    }
+  }, [runs]);
 
   const toggleRun = (id: string) => {
     if (selectedIds.includes(id)) {

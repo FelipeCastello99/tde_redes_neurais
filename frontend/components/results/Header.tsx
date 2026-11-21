@@ -1,6 +1,5 @@
 "use client";
 
-import { useMemo } from "react";
 import { formatNumber, formatPercent, formatTime, formatDate } from "@/lib/format";
 import { Icons } from "@/components/icons";
 

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ApiError, getRun } from '../lib/api';
+import { getRun } from '../lib/api';
 
 export type StreamEvent = {
   epoch: number;
@@ -34,8 +34,6 @@ export function useRunStream(runId: string | null) {
 
     const es = new EventSource(`/api/runs/${runId}/stream`);
     
-    let reconnectTimeout: NodeJS.Timeout;
-
     es.onopen = () => {
       setStatus('connected');
     };
@@ -74,7 +72,7 @@ export function useRunStream(runId: string | null) {
             es.close();
             return;
         }
-      } catch (e) {
+      } catch {
          // ignore
       }
       
@@ -87,7 +85,6 @@ export function useRunStream(runId: string | null) {
 
     return () => {
       es.close();
-      clearTimeout(reconnectTimeout);
     };
   }, [runId]);
 

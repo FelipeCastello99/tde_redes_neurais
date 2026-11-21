@@ -1,5 +1,3 @@
-import { Icons } from "@/components/icons";
-
 export function PageHeader({ title, description }: { title: string, description?: string }) {
   return (
     <div className="mb-8">

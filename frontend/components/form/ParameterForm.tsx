@@ -7,27 +7,33 @@ import { defaultDataConfig, defaultModelConfig, presets, PresetName, getPresetCo
 import { SectionAccordion } from "./SectionAccordion";
 import { NumberField, SelectField, SwitchField } from "./Fields";
 import { MultiCheckbox, NeuronsEditor } from "./ComplexFields";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { Icons } from "@/components/icons";
 
 export function ParameterForm({ 
   onSubmit, 
-  isSubmitting 
+  isSubmitting,
+  initialValues,
 }: { 
   onSubmit: (data: RunCreate) => void,
-  isSubmitting: boolean 
+  isSubmitting: boolean,
+  initialValues?: RunCreate | null,
 }) {
   const methods = useForm<RunCreate>({
     resolver: zodResolver(RunCreateSchema),
-    defaultValues: {
+    defaultValues: initialValues ?? {
       name: "Novo Treinamento",
       data: defaultDataConfig,
       model: defaultModelConfig,
     }
   });
 
-  const { handleSubmit, watch, reset, setValue } = methods;
+  const { handleSubmit, watch, reset } = methods;
   const watchAll = watch();
+
+  useEffect(() => {
+    if (initialValues) reset(initialValues);
+  }, [initialValues, reset]);
 
   const applyPreset = (preset: PresetName) => {
     const { data, model } = getPresetConfig(preset);

@@ -1,5 +1,6 @@
 from typing import Any
-from sqlalchemy import Column, String, Float, Integer, DateTime, JSON, ForeignKey, func
+
+from sqlalchemy import JSON, Column, DateTime, Float, ForeignKey, Integer, String, func
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import declarative_base, relationship
 

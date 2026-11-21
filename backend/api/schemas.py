@@ -7,8 +7,6 @@ from uuid import UUID
 
 from pydantic import BaseModel, Field, field_validator
 
-from nn.config import DataConfig, ModelConfig
-
 
 class RunCreate(BaseModel):
     name: str = Field(..., min_length=1, max_length=80)

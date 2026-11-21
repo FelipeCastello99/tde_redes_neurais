@@ -9,16 +9,22 @@ export function AccidentForm({
   meta, 
   runs, 
   onSimulate, 
-  isPredicting 
+  isPredicting,
+  initialRunId,
 }: { 
   meta: any; 
   runs: any[]; 
   onSimulate: (runId: string, features: any) => void;
   isPredicting: boolean;
+  initialRunId?: string | null;
 }) {
-  const methods = useForm({
+  const defaultRun = initialRunId && runs.some((run) => run.id === initialRunId)
+    ? initialRunId
+    : runs.length > 0 ? runs[0].id : "";
+
+  const methods = useForm<any>({
     defaultValues: {
-      runId: runs.length > 0 ? runs[0].id : "",
+      runId: defaultRun,
       features: {}
     }
   });

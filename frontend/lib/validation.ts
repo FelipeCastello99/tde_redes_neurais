@@ -23,7 +23,7 @@ export const DataConfigSchema = z.object({
   log1p_numeric: z.boolean(),
   class_weight: ClassWeightEnum,
   custom_weights: z.array(z.number().positive()).nullable().optional(),
-  drop_duplicates: z.boolean().default(true),
+  drop_duplicates: z.boolean(),
 });
 
 export const ModelConfigSchema = z.object({

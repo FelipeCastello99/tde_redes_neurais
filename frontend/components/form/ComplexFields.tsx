@@ -53,7 +53,7 @@ const AVAILABLE_GROUPS = [
 ];
 
 export function MultiCheckbox({ name, label, tooltip }: { name: string; label: string; tooltip?: string }) {
-    const { register, watch, setValue, formState: { errors } } = useFormContext();
+    const { watch, setValue, formState: { errors } } = useFormContext();
     const selected = watch(name) as string[] || [];
     const error = errors[name]?.message as string | undefined;
 

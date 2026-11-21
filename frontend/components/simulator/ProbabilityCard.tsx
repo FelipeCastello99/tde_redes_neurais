@@ -2,6 +2,7 @@
 
 import { formatPercent } from "@/lib/format";
 import { Icons } from "@/components/icons";
+import { ContributionBars } from "./ContributionBars";
 
 export function ProbabilityCard({ prediction }: { prediction: any }) {
   if (!prediction) {
@@ -88,6 +89,11 @@ export function ProbabilityCard({ prediction }: { prediction: any }) {
         <div className="bg-warning/10 border border-warning/20 rounded-md p-3 text-xs text-warning flex gap-2 items-start mt-6">
           <Icons.Warning className="w-4 h-4 shrink-0 mt-0.5" />
           <p><strong>Aviso:</strong> Este simulador é um protótipo acadêmico. A base de dados (DATATRAN) não contém velocidade no impacto ou uso do cinto de segurança, fatores determinantes para a letalidade. O modelo estima probabilidades estatísticas globais, não desfechos físicos garantidos.</p>
+        </div>
+
+        <div className="border-t border-border pt-4 space-y-2">
+          <h3 className="text-xs font-bold text-muted uppercase tracking-wider">Contribuição dos Campos</h3>
+          <ContributionBars contributions={prediction.contributions} />
         </div>
       </div>
     </div>

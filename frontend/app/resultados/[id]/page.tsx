@@ -3,11 +3,12 @@
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { getRun } from "@/lib/api";
-import { PageHeader } from "@/components/layout";
 import { RunHeader, MetricsGrid } from "@/components/results/Header";
 import { ConfusionMatrix } from "@/components/charts/ConfusionMatrix";
 import { RocPrChart, ThresholdChart } from "@/components/charts/EvaluationCharts";
+import { PredictedProbHistogram, CalibrationChart } from "@/components/charts/DiagnosticCharts";
 import { MetricsGridDetailed, HyperparameterTable } from "@/components/results/Details";
+import { ArtifactDownloads, ResultActions } from "@/components/results/Downloads";
 import { Icons } from "@/components/icons";
 
 export default function ResultadosPage() {
@@ -100,9 +101,36 @@ export default function ResultadosPage() {
             />
           </div>
 
-          <div className="bg-panel border border-border rounded-xl p-5 shadow-sm">
-            <h3 className="text-sm font-bold text-text mb-4 uppercase tracking-wider">Hiperparâmetros</h3>
-            <HyperparameterTable data={config.data} model={config.model} />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="bg-panel border border-border rounded-xl p-5 shadow-sm h-[300px]">
+              <h3 className="text-sm font-bold text-text mb-4 uppercase tracking-wider">Histograma de Probabilidades</h3>
+              <div className="h-[230px]">
+                <PredictedProbHistogram histogram={metrics.prediction_histogram} />
+              </div>
+            </div>
+            <div className="bg-panel border border-border rounded-xl p-5 shadow-sm h-[300px]">
+              <h3 className="text-sm font-bold text-text mb-4 uppercase tracking-wider">Calibração (ECE {metrics.ece?.toFixed(3)})</h3>
+              <div className="h-[230px]">
+                <CalibrationChart bins={metrics.calibration_bins} />
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2 bg-panel border border-border rounded-xl p-5 shadow-sm">
+              <h3 className="text-sm font-bold text-text mb-4 uppercase tracking-wider">Hiperparâmetros</h3>
+              <HyperparameterTable data={config.data} model={config.model} />
+            </div>
+            <div className="bg-panel border border-border rounded-xl p-5 shadow-sm space-y-5">
+              <div>
+                <h3 className="text-sm font-bold text-text mb-3 uppercase tracking-wider">Ações</h3>
+                <ResultActions runId={run.id} />
+              </div>
+              <div>
+                <h3 className="text-sm font-bold text-text mb-3 uppercase tracking-wider">Downloads</h3>
+                <ArtifactDownloads runId={run.id} />
+              </div>
+            </div>
           </div>
         </>
       ) : (

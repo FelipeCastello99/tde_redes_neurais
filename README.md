@@ -21,9 +21,9 @@ Samuel Pereira da Silva Varão
 | 2 | Rede neural (`backend/nn/model.py`) | ✅ concluída |
 | 3 | Métricas e exportação | ✅ concluída |
 | 4 | Notebook do TDE | ✅ concluída |
-| 5 | API FastAPI + PostgreSQL | ⏳ próxima |
-| 6 | Frontend Next.js | ⏳ |
-| 7 | Docker Compose (raiz) | ⏳ |
+| 5 | API FastAPI + PostgreSQL | ✅ concluída |
+| 6 | Frontend Next.js | ✅ concluída |
+| 7 | Docker Compose (raiz) | ⏳ próxima |
 | 8 | Documento, ensaio e entrega | ⏳ |
 
 Detalhes em [`.specs/backend.md`](.specs/backend.md),

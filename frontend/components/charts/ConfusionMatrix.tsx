@@ -1,7 +1,5 @@
 "use client";
 
-import { ResponsiveContainer, Heatmap, CartesianGrid, XAxis, YAxis, Tooltip as RechartsTooltip, Cell, Text } from "recharts";
-import { useMemo } from "react";
 import { formatPercent } from "@/lib/format";
 
 export function ConfusionMatrix({ matrix, classNames }: { matrix: number[][], classNames: string[] }) {

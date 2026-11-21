@@ -5,7 +5,7 @@ import Link from "next/link";
 import { getRuns } from "@/lib/api";
 import { PageHeader, StatCard } from "@/components/layout";
 import { Icons } from "@/components/icons";
-import { formatDate, formatTime, formatPercent, formatNumber } from "@/lib/format";
+import { formatDate, formatTime, formatPercent } from "@/lib/format";
 
 export default function DashboardPage() {
   const [runs, setRuns] = useState<any[]>([]);

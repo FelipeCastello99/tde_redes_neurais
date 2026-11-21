@@ -1,7 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from "recharts";
+import { useState } from "react";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
 export function RocPrChart({ roc_details, pr_details, classNames }: { roc_details: any, pr_details: any, classNames: string[] }) {
   const [tab, setTab] = useState<'roc' | 'pr'>('roc');

@@ -5,7 +5,7 @@ BACKEND := backend
 
 .DEFAULT_GOAL := help
 
-.PHONY: help fetch data-check venv install test lint typecheck clean-pyc
+.PHONY: help fetch data-check venv install test lint typecheck types clean-pyc
 
 help:
 	@echo "TDE Redes Neurais — alvos disponíveis:"
@@ -16,6 +16,7 @@ help:
 	@echo "  make test        Roda o pytest do backend"
 	@echo "  make lint        Roda o ruff no backend"
 	@echo "  make typecheck   Roda o mypy no núcleo e na API"
+	@echo "  make types       Gera openapi.json e os tipos TypeScript do frontend"
 	@echo "  make clean-pyc   Remove caches do Python"
 
 fetch:
@@ -40,6 +41,10 @@ lint:
 
 typecheck:
 	cd $(BACKEND) && ../$(VENV)/bin/mypy nn api
+
+types:
+	cd $(BACKEND) && ../$(VENV)/bin/python scripts/export_openapi.py
+	cd frontend && npm run types
 
 clean-pyc:
 	find $(BACKEND) -type d -name __pycache__ -prune -exec rm -rf {} +

@@ -1,7 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
-import { formatNumber, formatPercent } from "@/lib/format";
+import { formatPercent } from "@/lib/format";
 
 export function MetricsGridDetailed({ per_class, macro, weighted, classNames }: { per_class: any[], macro: any, weighted: any, classNames: string[] }) {
   if (!per_class) return null;

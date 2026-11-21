@@ -3,8 +3,9 @@ import { NextRequest, NextResponse } from "next/server";
 // URL interna da API, lida em runtime (padrão localhost:8000 p/ desenvolvimento local)
 const INTERNAL_API = process.env.API_INTERNAL_URL || "http://127.0.0.1:8000";
 
-export async function GET(request: NextRequest, { params }: { params: { path: string[] } }) {
-  const path = params.path.join("/");
+export async function GET(request: NextRequest, { params }: { params: Promise<{ path: string[] }> }) {
+  const { path: segments } = await params;
+  const path = segments.join("/");
   const url = new URL(request.url);
   const search = url.search;
   
@@ -39,8 +40,9 @@ export async function GET(request: NextRequest, { params }: { params: { path: st
   }
 }
 
-export async function POST(request: NextRequest, { params }: { params: { path: string[] } }) {
-  const path = params.path.join("/");
+export async function POST(request: NextRequest, { params }: { params: Promise<{ path: string[] }> }) {
+  const { path: segments } = await params;
+  const path = segments.join("/");
   
   try {
     const body = await request.text();
@@ -66,8 +68,9 @@ export async function POST(request: NextRequest, { params }: { params: { path: s
   }
 }
 
-export async function DELETE(request: NextRequest, { params }: { params: { path: string[] } }) {
-  const path = params.path.join("/");
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ path: string[] }> }) {
+  const { path: segments } = await params;
+  const path = segments.join("/");
   
   try {
     const res = await fetch(`${INTERNAL_API}/api/${path}`, {
