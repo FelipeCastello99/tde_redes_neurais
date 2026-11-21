@@ -1,1 +1,38 @@
-./.spec
+.spec
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Dados e artefatos (grandes; baixados por scripts/fetch_data.py)
+data/raw/*.csv
+data/raw/*.zip
+data/raw/*.part
+artifacts/
+
+# Node / Next
+node_modules/
+.next/
+out/
+npm-debug.log*
+
+# Ambiente e segredos
+.env
+.env.local
+
+# Notebooks e editores
+.ipynb_checkpoints/
+.vscode/
+.idea/
+.DS_Store
+
