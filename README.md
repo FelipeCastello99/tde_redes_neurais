@@ -23,8 +23,8 @@ Samuel Pereira da Silva Varão
 | 4 | Notebook do TDE | ✅ concluída |
 | 5 | API FastAPI + PostgreSQL | ✅ concluída |
 | 6 | Frontend Next.js | ✅ concluída |
-| 7 | Docker Compose (raiz) | ⏳ próxima |
-| 8 | Documento, ensaio e entrega | ⏳ |
+| 7 | Docker Compose (raiz) | ✅ concluída |
+| 8 | Documento, ensaio e entrega | ⏳ próxima |
 
 Detalhes em [`.specs/backend.md`](.specs/backend.md),
 [`.specs/frontend.md`](.specs/frontend.md) e controle em
@@ -50,7 +50,7 @@ orquestração e documentação compartilhada ficam na raiz.
 ```
 backend/                 API e núcleo de rede neural (Python)
 ├── nn/                  modelo, dados, métricas e exportação (NumPy)
-├── api/                 FastAPI: treino, histórico, SSE e simulador
+├── api/                 FastAPI + Dockerfile: treino, SSE e simulador
 ├── scripts/             download/validação e seed de demonstração
 ├── tests/               testes unitários e de integração
 ├── notebooks/           notebook do TDE
@@ -58,7 +58,7 @@ backend/                 API e núcleo de rede neural (Python)
 ├── artifacts/           runs, pesos e curvas (não versionado)
 └── pyproject.toml       dependências e configuração de testes/lint/mypy
 
-frontend/                Next.js (a partir da Fase 6)
+frontend/                Next.js + Dockerfile (standalone)
 
 docs/                    dicionário do dataset e documento explicativo
 .specs/                  especificação, checklist e materiais de apoio (local)
@@ -66,20 +66,103 @@ docs/                    dicionário do dataset e documento explicativo
 README.md
 Makefile
 .gitignore
-docker-compose.yml       (Fase 7: db + api + web)
+docker-compose.yml       db + api + web
 ```
 
-## Ambiente
+## Subindo com Docker
 
-Requisitos: Python 3.12+, Docker 29+ e Docker Compose v2+.
+Requisitos: Docker 29+ e Docker Compose v2+.
+
+```bash
+cp .env.example .env   # opcional: ajuste portas/credenciais
+make up                # sobe data + db + api + web (build incluso)
+```
+
+O serviço one-shot `data` baixa e valida o CSV automaticamente em
+`backend/data/raw/` caso ele ainda não exista. Se preferir baixar antes:
+`make fetch`.
+
+Depois de subir:
+
+| Serviço | URL |
+|---|---|
+| Interface | http://localhost:3000 |
+| API / OpenAPI | http://localhost:8000/api/docs |
+| Healthcheck | http://localhost:8000/api/health |
+
+Para popular a apresentação com um treino pronto:
+
+```bash
+make seed    # cria o run "Demo — PRF 2024" no Postgres e em backend/artifacts/
+```
+
+Operação:
+
+```bash
+make ps           # estado dos serviços
+make logs         # logs em tempo real
+make down         # derruba containers (preserva pgdata e artefatos)
+make reset-db     # apaga containers + volume pgdata (destrutivo)
+make db-shell     # psql dentro do container
+```
+
+A ordem de inicialização é garantida por dependências e healthchecks:
+`data` (CSV) → `db` (Postgres 16) → `api` (FastAPI) → `web` (Next.js standalone).
+
+### Arquitetura dos containers
+
+```
+Navegador :3000
+   │
+   ▼
+web (Next.js standalone)
+   │  API_INTERNAL_URL=http://api:8000 (proxy runtime + SSE)
+   ▼
+api (FastAPI + Uvicorn) :8000
+   │  DATABASE_URL=postgresql+psycopg://...@db:5432/tde
+   ├── volume ./backend/data:/app/data
+   ├── volume ./backend/artifacts:/app/artifacts
+   ▼
+db (postgres:16-alpine) + volume nomeado pgdata
+```
+
+O serviço `data` (python:3.12-slim) executa `scripts/fetch_data.py` uma vez;
+ele é idempotente e não sobe se o CSV já estiver íntegro.
+
+## Ambiente local (sem Docker)
+
+Requisitos: Python 3.12+ e Node 24+.
 
 ```bash
 make venv         # cria .venv na raiz
 make install      # instala o backend + dependências de desenvolvimento
 make test         # pytest do backend
 make lint         # ruff
-make typecheck    # mypy em nn/ e api/
+make typecheck    # mypy em nn e api
+make types        # OpenAPI + tipos TypeScript
+cd frontend && npm install && npm run dev
 ```
+
+## Troubleshooting
+
+**Porta 5432 ocupada** — outro Postgres local está rodando. Altere no `.env`:
+
+```env
+DB_PORT=55432
+```
+
+**A API não fica saudável** — confira `make logs` e se o CSV existe em
+`backend/data/raw/datatran2024.csv`. O container não baixa o dataset sozinho.
+
+**Quero começar do zero** — `make reset-db` remove o volume `pgdata`; os
+artefatos em `backend/artifacts/` continuam no host. Para apagar também:
+
+```bash
+rm -rf backend/artifacts/runs
+```
+
+**Mudei dependências** — `make build` reconstrói as imagens; `make up` já faz
+build quando necessário.
 
 ## Roadmap
 
@@ -88,4 +171,4 @@ make typecheck    # mypy em nn/ e api/
 3. Notebook com EDA, treino, avaliação e análise crítica.
 4. API com fila de treino, SSE e persistência em PostgreSQL.
 5. Interface com formulário completo, gráficos e simulador.
-6. `docker compose up --build` sobe banco, API e front.
+6. `docker compose up --build` sobe banco, API e front. ✅

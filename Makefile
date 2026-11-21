@@ -2,10 +2,11 @@ SHELL := /bin/bash
 PY ?= python3
 VENV := .venv
 BACKEND := backend
+COMPOSE ?= docker compose
 
 .DEFAULT_GOAL := help
 
-.PHONY: help fetch data-check venv install test lint typecheck types clean-pyc
+.PHONY: help fetch data-check venv install test lint typecheck types up down build logs ps db-shell reset-db seed clean clean-pyc
 
 help:
 	@echo "TDE Redes Neurais — alvos disponíveis:"
@@ -17,7 +18,16 @@ help:
 	@echo "  make lint        Roda o ruff no backend"
 	@echo "  make typecheck   Roda o mypy no núcleo e na API"
 	@echo "  make types       Gera openapi.json e os tipos TypeScript do frontend"
-	@echo "  make clean-pyc   Remove caches do Python"
+	@echo "  make up          Sobe db + api + web (build incluso)"
+	@echo "  make down        Derruba os containers"
+	@echo "  make build       Reconstrói as imagens"
+	@echo "  make logs        Acompanha os logs dos serviços"
+	@echo "  make ps          Mostra o estado dos serviços"
+	@echo "  make db-shell    Abre o psql no container do Postgres"
+	@echo "  make reset-db    Remove containers e o volume pgdata"
+	@echo "  make seed        Cria um run Demo no banco e nos artefatos"
+	@echo "  make clean       Remove caches e artefatos de build"
+	@echo "  make clean-pyc   Remove apenas caches do Python"
 
 fetch:
 	cd $(BACKEND) && $(PY) scripts/fetch_data.py --force
@@ -45,6 +55,37 @@ typecheck:
 types:
 	cd $(BACKEND) && ../$(VENV)/bin/python scripts/export_openapi.py
 	cd frontend && npm run types
+
+up:
+	$(COMPOSE) up --build
+
+down:
+	$(COMPOSE) down
+
+build:
+	$(COMPOSE) build
+
+logs:
+	$(COMPOSE) logs -f
+
+ps:
+	$(COMPOSE) ps
+
+db-shell:
+	$(COMPOSE) exec db psql -U $${POSTGRES_USER:-tde} -d $${POSTGRES_DB:-tde}
+
+reset-db:
+	$(COMPOSE) down -v
+
+seed:
+	@if [ -x "$(VENV)/bin/python" ]; then \
+		cd $(BACKEND) && ../$(VENV)/bin/python scripts/seed_demo.py; \
+	else \
+		$(COMPOSE) exec api python scripts/seed_demo.py; \
+	fi
+
+clean: clean-pyc
+	rm -rf frontend/.next frontend/out frontend/test-results frontend/playwright-report
 
 clean-pyc:
 	find $(BACKEND) -type d -name __pycache__ -prune -exec rm -rf {} +

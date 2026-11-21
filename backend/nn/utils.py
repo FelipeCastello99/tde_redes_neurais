@@ -15,8 +15,8 @@ import numpy as np
 
 BACKEND_ROOT = Path(__file__).resolve().parents[1]
 PROJECT_ROOT = BACKEND_ROOT.parent
-DATA_DIR = BACKEND_ROOT / "data" / "raw"
-ARTIFACTS_DIR = BACKEND_ROOT / "artifacts"
+DATA_DIR = Path(os.getenv("DATA_DIR", str(BACKEND_ROOT / "data" / "raw")))
+ARTIFACTS_DIR = Path(os.getenv("ARTIFACTS_DIR", str(BACKEND_ROOT / "artifacts")))
 
 
 def set_seed(seed: int) -> np.random.Generator:
