@@ -51,7 +51,7 @@ export function HyperparameterTable({ data, model }: { data: any, model: any }) 
   const allParams = [
     { cat: 'Dados', key: 'Alvo', val: data.target },
     { cat: 'Dados', key: 'Amostras Max', val: data.max_rows || 'Todas' },
-    { cat: 'Dados', key: 'Split (T/V/T)', val: `${1 - data.val_size - data.test_size}/${data.val_size}/${data.test_size}` },
+    { cat: 'Dados', key: 'Split (T/V/T)', val: `${(1 - data.val_size - data.test_size).toFixed(2)}/${data.val_size}/${data.test_size}` },
     { cat: 'Dados', key: 'Pesos', val: data.class_weight },
     { cat: 'Pré-processamento', key: 'Scaler', val: data.scaler },
     { cat: 'Arquitetura', key: 'Camadas Ocultas', val: model.hidden_layers },

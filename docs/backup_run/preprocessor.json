@@ -1,0 +1,158 @@
+{
+  "schema_version": 1,
+  "target": "fatal_binario",
+  "scaler": "standard",
+  "log1p_numeric": true,
+  "numeric_columns": [
+    "br",
+    "km",
+    "hora_sin",
+    "hora_cos",
+    "is_fim_semana",
+    "veiculos"
+  ],
+  "categorical_columns": [
+    "uf",
+    "dia_semana",
+    "tipo_pista",
+    "tracado_principal",
+    "uso_solo",
+    "sentido_via",
+    "causa_acidente",
+    "tipo_acidente",
+    "fase_dia",
+    "condicao_metereologica"
+  ],
+  "numeric_fill": [
+    5.0369526024136295,
+    5.221705353562907,
+    -0.3214394653031611,
+    -0.1950903220161282,
+    0.0,
+    1.0986122886681096
+  ],
+  "numeric_center": [
+    5.097762865343783,
+    4.92447281115896,
+    -0.14272469768495,
+    -0.13336890823126096,
+    0.3238888888888889,
+    1.0419570422198936
+  ],
+  "numeric_scale": [
+    0.7642662132591023,
+    1.367448776185972,
+    0.7435330148672026,
+    0.6395318997442013,
+    0.46795819956831,
+    0.3030044801918173
+  ],
+  "categories": {
+    "uf": [
+      "BA",
+      "CE",
+      "DF",
+      "ES",
+      "GO",
+      "MG",
+      "MS",
+      "MT",
+      "PA",
+      "PB",
+      "PE",
+      "PI",
+      "PR",
+      "RJ",
+      "RN",
+      "RO",
+      "RS",
+      "SC",
+      "SP",
+      "__OUTROS__"
+    ],
+    "dia_semana": [
+      "domingo",
+      "quarta-feira",
+      "quinta-feira",
+      "segunda-feira",
+      "sexta-feira",
+      "sábado",
+      "terça-feira",
+      "__OUTROS__"
+    ],
+    "tipo_pista": [
+      "Dupla",
+      "Múltipla",
+      "Simples",
+      "__OUTROS__"
+    ],
+    "tracado_principal": [
+      "Aclive",
+      "Curva",
+      "Declive",
+      "Interseção de Vias",
+      "Reta",
+      "Rotatória",
+      "__OUTROS__"
+    ],
+    "uso_solo": [
+      "Não",
+      "Sim",
+      "__OUTROS__"
+    ],
+    "sentido_via": [
+      "Crescente",
+      "Decrescente",
+      "__OUTROS__"
+    ],
+    "causa_acidente": [
+      "Acessar a via sem observar a presença dos outros veículos",
+      "Acesso irregular",
+      "Animais na Pista",
+      "Ausência de reação do condutor",
+      "Avarias e/ou desgaste excessivo no pneu",
+      "Condutor Dormindo",
+      "Condutor deixou de manter distância do veículo da frente",
+      "Demais falhas mecânicas ou elétricas",
+      "Ingestão de álcool pelo condutor",
+      "Manobra de mudança de faixa",
+      "Reação tardia ou ineficiente do condutor",
+      "Trafegar com motocicleta (ou similar) entre as faixas",
+      "Transitar na contramão",
+      "Ultrapassagem Indevida",
+      "Velocidade Incompatível",
+      "__OUTROS__"
+    ],
+    "tipo_acidente": [
+      "Atropelamento de Animal",
+      "Atropelamento de Pedestre",
+      "Colisão com objeto",
+      "Colisão frontal",
+      "Colisão lateral mesmo sentido",
+      "Colisão lateral sentido oposto",
+      "Colisão transversal",
+      "Colisão traseira",
+      "Engavetamento",
+      "Incêndio",
+      "Queda de ocupante de veículo",
+      "Saída de leito carroçável",
+      "Tombamento",
+      "__OUTROS__"
+    ],
+    "fase_dia": [
+      "Amanhecer",
+      "Anoitecer",
+      "Plena Noite",
+      "Pleno dia",
+      "__OUTROS__"
+    ],
+    "condicao_metereologica": [
+      "Chuva",
+      "Céu Claro",
+      "Garoa/Chuvisco",
+      "Nublado",
+      "Sol",
+      "__OUTROS__"
+    ]
+  }
+}

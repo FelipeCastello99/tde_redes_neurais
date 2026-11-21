@@ -6,7 +6,7 @@ COMPOSE ?= docker compose
 
 .DEFAULT_GOAL := help
 
-.PHONY: help fetch data-check venv install test lint typecheck types up down build logs ps db-shell reset-db seed clean clean-pyc
+.PHONY: help fetch data-check venv install test lint typecheck types up down build logs ps db-shell reset-db seed deliverables screenshots package clean clean-pyc
 
 help:
 	@echo "TDE Redes Neurais — alvos disponíveis:"
@@ -26,6 +26,9 @@ help:
 	@echo "  make db-shell    Abre o psql no container do Postgres"
 	@echo "  make reset-db    Remove containers e o volume pgdata"
 	@echo "  make seed        Cria um run Demo no banco e nos artefatos"
+	@echo "  make deliverables Gera DOCX, PDF, slides e roteiro"
+	@echo "  make screenshots  Captura as telas (requer stack no ar)"
+	@echo "  make package      Gera o zip final em dist/"
 	@echo "  make clean       Remove caches e artefatos de build"
 	@echo "  make clean-pyc   Remove apenas caches do Python"
 
@@ -83,6 +86,15 @@ seed:
 	else \
 		$(COMPOSE) exec api python scripts/seed_demo.py; \
 	fi
+
+deliverables:
+	cd $(BACKEND) && ../$(VENV)/bin/python scripts/build_deliverables.py
+
+screenshots:
+	cd frontend && SCREENSHOT_BASE_URL=$${SCREENSHOT_BASE_URL:-http://localhost:3000} node scripts/capture_screenshots.mjs
+
+package: deliverables
+	cd $(BACKEND) && ../$(VENV)/bin/python scripts/package_delivery.py
 
 clean: clean-pyc
 	rm -rf frontend/.next frontend/out frontend/test-results frontend/playwright-report

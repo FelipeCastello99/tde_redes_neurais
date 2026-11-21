@@ -41,6 +41,7 @@ export function Sidebar() {
       <div className="p-4 border-t border-border text-xs text-muted">
         <p>PRF DATATRAN 2024</p>
         <p>Modelo MLP from scratch</p>
+        <p className="mt-2">[CURSO] · [INSTITUIÇÃO] · [SEMESTRE]</p>
       </div>
     </aside>
   );

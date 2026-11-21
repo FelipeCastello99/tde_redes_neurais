@@ -24,7 +24,7 @@ Samuel Pereira da Silva Varão
 | 5 | API FastAPI + PostgreSQL | ✅ concluída |
 | 6 | Frontend Next.js | ✅ concluída |
 | 7 | Docker Compose (raiz) | ✅ concluída |
-| 8 | Documento, ensaio e entrega | ⏳ próxima |
+| 8 | Documento, ensaio e entrega | 🚧 entregáveis prontos; pendências humanas |
 
 Detalhes em [`.specs/backend.md`](.specs/backend.md),
 [`.specs/frontend.md`](.specs/frontend.md) e controle em
@@ -163,6 +163,28 @@ rm -rf backend/artifacts/runs
 
 **Mudei dependências** — `make build` reconstrói as imagens; `make up` já faz
 build quando necessário.
+
+## Entregáveis
+
+| Arquivo | Conteúdo |
+|---|---|
+| `backend/notebooks/TDE_rede_neural_acidentes_PRF.ipynb` | Notebook completo, executado com saídas |
+| `docs/TDE_documento_explicativo.docx` / `.pdf` | Documento nas 8 seções do guia |
+| `docs/TDE_apresentacao.pptx` | 12 slides com notas e roteiro de 10 min |
+| `docs/screenshots/` | Dashboard, treino, resultados, comparação, dados e simulador |
+| `docs/roteiro_demo.md` | Roteiro da demo + plano B com `make seed` |
+| `docs/backup_run/` | Artefatos do run principal (model, weights, curvas, métricas) |
+| `docs/PENDENCIAS_ENTREGA.md` | Itens humanos/externos a preencher |
+| `dist/TDE_redes_neurais_entrega.zip` | Pacote final (gerado por `make package`) |
+
+```bash
+make deliverables   # DOCX, PDF, slides, QR, roteiro e backup
+make screenshots    # requer a stack no ar
+make package        # zip final em dist/
+```
+
+> A entrega depende de preencher `[CURSO]`, `[INSTITUIÇÃO]` e `[SEMESTRE]` e confirmar
+> com o professor a autorização do grupo de 3 integrantes.
 
 ## Roadmap
 

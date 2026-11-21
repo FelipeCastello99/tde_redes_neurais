@@ -15,6 +15,7 @@ export function formatNumber(num: number, decimals = 2): string {
   
   export function formatTime(seconds: number): string {
     if (!seconds && seconds !== 0) return "--:--";
+    if (seconds > 0 && seconds < 1) return "<1 s";
     const m = Math.floor(seconds / 60);
     const s = Math.floor(seconds % 60);
     if (m > 0) return `${m} min ${s} s`;
