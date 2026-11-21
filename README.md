@@ -75,7 +75,7 @@ Requisitos: Docker 29+ e Docker Compose v2+.
 
 ```bash
 cp .env.example .env   # opcional: ajuste portas/credenciais
-make up                # sobe data + db + api + web (build incluso)
+make up                # sobe data + db + api + web em background (build incluso)
 ```
 
 O serviço one-shot `data` baixa e valida o CSV automaticamente em
@@ -167,8 +167,19 @@ make up
 DB_PORT=55432
 ```
 
+**“This page couldn’t load” ao clicar em uma rota** — normalmente o `web` estava
+reiniciando (build, `make refresh` ou `Ctrl+C` no `make up` antigo). Confira:
+
+```bash
+docker compose ps
+curl -I http://localhost:3000/treinar
+```
+
+Se `web` estiver `healthy`, basta recarregar com `Ctrl+Shift+R`. O alvo `make up`
+agora sobe em background; use `make logs` para acompanhar sem derrubar a stack.
+
 **A API não fica saudável** — confira `make logs` e se o CSV existe em
-`backend/data/raw/datatran2024.csv`. O container não baixa o dataset sozinho.
+`backend/data/raw/datatran2024.csv`. O serviço `data` baixa automaticamente.
 
 **Quero começar do zero** — `make reset-db` remove o volume `pgdata`; os
 artefatos em `backend/artifacts/` continuam no host. Para apagar também:

@@ -18,7 +18,7 @@ help:
 	@echo "  make lint        Roda o ruff no backend"
 	@echo "  make typecheck   Roda o mypy no núcleo e na API"
 	@echo "  make types       Gera openapi.json e os tipos TypeScript do frontend"
-	@echo "  make up          Sobe db + api + web (build incluso)"
+	@echo "  make up          Sobe db + api + web em background (build incluso)"
 	@echo "  make down        Derruba os containers"
 	@echo "  make refresh     Recria tudo do zero preservando pgdata/artifacts"
 	@echo "  make build       Reconstrói as imagens"
@@ -61,7 +61,7 @@ types:
 	cd frontend && npm run types
 
 up:
-	$(COMPOSE) up --build
+	$(COMPOSE) up --build -d
 
 down:
 	$(COMPOSE) down
