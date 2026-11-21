@@ -33,7 +33,7 @@
 | Tamanho do CSV | 21.365.616 bytes |
 | SHA-256 do CSV | `7d26e6f4528c2ca2636a8fea2c5bc8755a0ff6a182d82c238a8793b016e4366d` |
 | SHA-256 do ZIP oficial | `905dac836867297b261e4edefff6cdb470809814e7e1796b3f2f57517099d165` |
-| Registros | 73.202 (73.203 linhas com cabeçalho) |
+| Registros | 73.202 no arquivo; **73.201 usados** após descartar 1 linha com alvo `NA` |
 | Colunas | 30 |
 | Download | `make fetch` (ou `python scripts/fetch_data.py`) |
 | Verificação | `make data-check` (ou `python scripts/fetch_data.py --check`) |
@@ -135,8 +135,12 @@ Distribuição do alvo:
 y = (df["mortos"] > 0).astype("int8")
 ```
 
-- Classe 0 (`sem_vitima_fatal`): 67.977 (92,9%)
+- Classe 0 (`sem_vitima_fatal`): 67.976 (92,9%)
 - Classe 1 (`vitima_fatal`): 5.225 (7,1%)
+
+> O pipeline (`nn/data.py::load_raw`) descarta o registro com
+> `classificacao_acidente = "NA"`, então ambas as formulações usam as mesmas
+> 73.201 ocorrências. Isso mantém os dois alvos comparáveis.
 
 ### 6.2 `gravidade_3_classes`
 

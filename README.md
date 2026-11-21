@@ -17,8 +17,8 @@ Samuel Pereira da Silva Varão
 | Fase | Entrega | Situação |
 |---|---|---|
 | 0 | Fundação, dataset e validação | ✅ concluída |
-| 1 | Pipeline de dados (`nn/data.py`) | ⏳ próxima |
-| 2 | Rede neural (`nn/model.py`) | ⏳ |
+| 1 | Pipeline de dados (`nn/data.py`) | ✅ concluída |
+| 2 | Rede neural (`nn/model.py`) | ⏳ próxima |
 | 3 | Métricas e exportação | ⏳ |
 | 4 | Notebook do TDE | ⏳ |
 | 5 | API FastAPI + PostgreSQL | ⏳ |
