@@ -1,5 +1,13 @@
 # Pendências da entrega
 
+## Entregáveis técnicos concluídos
+
+- [x] Documento técnico completo em `docs/TDE_documento_completo.docx` e `.pdf` (47 páginas).
+- [x] Revisão de consistência numérica, figuras, tabelas, sumário e acessibilidade do DOCX.
+- [x] Notebook executado, documento resumido, slides, capturas, backup e zip final.
+
+## Pendências externas
+
 Os itens abaixo dependem de informação externa e **não podem ser inventados**:
 
 - [ ] Substituir `[CURSO]`, `[INSTITUIÇÃO]` e `[SEMESTRE]` no notebook, DOCX/PDF e rodapé do site.

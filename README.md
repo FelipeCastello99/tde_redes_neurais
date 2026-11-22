@@ -197,7 +197,7 @@ build quando necessário.
 |---|---|
 | `backend/notebooks/TDE_rede_neural_acidentes_PRF.ipynb` | Notebook completo, executado com saídas |
 | `docs/TDE_documento_explicativo.docx` / `.pdf` | Documento resumido nas 8 seções do guia |
-| `docs/TDE_documento_completo.docx` | Documento técnico completo (≈7.700 palavras, 48 tabelas, 13 figuras) |
+| `docs/TDE_documento_completo.docx` / `.pdf` | Documento técnico completo (≈7.700 palavras, 48 tabelas, 14 figuras, 47 páginas) |
 | `docs/TDE_apresentacao.pptx` | 12 slides com notas e roteiro de 10 min |
 | `docs/screenshots/` | Dashboard, treino, resultados, comparação, dados e simulador |
 | `docs/roteiro_demo.md` | Roteiro da demo + plano B com `make seed` |
@@ -207,6 +207,7 @@ build quando necessário.
 
 ```bash
 make detailed-doc   # DOCX técnico completo
+make detailed-pdf   # PDF do documento completo
 make deliverables   # DOCX resumido, PDF, slides, QR, roteiro e backup
 make screenshots    # requer a stack no ar
 make package        # zip final em dist/

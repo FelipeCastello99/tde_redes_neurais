@@ -360,7 +360,7 @@ def build() -> None:
         "Acidentes de trânsito são uma das principais causas externas de morte no Brasil. A PRF registra "
         "ocorrências em rodovias federais e publica os dados abertos do DATATRAN. A gravidade não é distribuída "
         "de forma uniforme: a maioria dos acidentes tem feridos, uma parte menor não tem vítimas e uma minoria "
-        "tem vítimas fatais. prever essa minoria é o desafio central."
+        "tem vítimas fatais. Prever essa minoria é o desafio central."
     )
     b.p(
         "A motivação acadêmica é dupla. Primeiro, aplicar os conceitos de neurônio, pesos, bias, ativação, loss, "
@@ -1589,25 +1589,25 @@ def build() -> None:
 
     b.h("Apêndice F — Conformidade com o guia do professor", 1)
     b.table(
-        ["Exigência", "Onde atendida"],
+        ["Exigência", "Onde atendida", "Página (PDF)"],
         [
-            ["Dataset oficial + órgão + link + variáveis + entrada/saída + treino/teste", "2.1–2.4, 3.4, Apêndice B"],
-            ["Leitura, colunas, tipos, nulos, seleção, preparação, split", "2.2, 2.5, 3.1–3.7"],
-            ["__init__, forward, loss, backpropagation, fit", "4.3–4.10"],
-            ["Justificativa da função de perda", "4.5 e 5.2"],
-            ["Derivada, regra da cadeia, gradiente, lr, atualização", "4.6–4.8"],
-            ["Arquitetura explícita", "4.2 e 5.1"],
-            ["Hiperparâmetros justificados", "5.2 e Apêndice C"],
-            ["≥ 2 entradas, ≥ 1 camada oculta, saída adequada, épocas", "4.2 e 5.1"],
-            ["Evolução do treino", "5.4 e notebook §7"],
-            ["Teste em dados não vistos + previsões + erros + métricas", "5.9–5.11 e capítulo 6"],
-            ["Acurácia vs métricas adequadas", "5.9, 5.12 e 11"],
-            ["Análise crítica completa", "11 e 12"],
-            ["Notebook comentado", "backend/notebooks (27 células)"],
-            ["Documento nas 8 seções", "Resumo executivo + capítulos 1–12"],
+            ["Dataset oficial + órgão + link + variáveis + entrada/saída + treino/teste", "2.1–2.4, 3.4, Apêndice B", "7–9"],
+            ["Leitura, colunas, tipos, nulos, seleção, preparação, split", "2.2, 2.5, 3.1–3.7", "7–12"],
+            ["__init__, forward, loss, backpropagation, fit", "4.3–4.10", "13–16"],
+            ["Justificativa da função de perda", "4.5 e 5.2", "14 e 16"],
+            ["Derivada, regra da cadeia, gradiente, lr, atualização", "4.6–4.8", "14–15"],
+            ["Arquitetura explícita", "4.2 e 5.1", "13 e 16"],
+            ["Hiperparâmetros justificados", "5.2 e Apêndice C", "16–17 e 41"],
+            ["≥ 2 entradas, ≥ 1 camada oculta, saída adequada, épocas", "4.2 e 5.1", "13 e 16"],
+            ["Evolução do treino", "5.4 e notebook §7", "17"],
+            ["Teste em dados não vistos + previsões + erros + métricas", "5.9–5.11 e capítulo 6", "18–21"],
+            ["Acurácia vs métricas adequadas", "5.9, 5.12 e 11", "18–19 e 34"],
+            ["Análise crítica completa", "11 e 12", "34–36"],
+            ["Notebook comentado", "backend/notebooks (27 células)", "arquivo"],
+            ["Documento nas 8 seções", "Resumo executivo + capítulos 1–12", "2–36"],
         ],
-        widths=[9.2, 6.8],
-        font_size=8.0,
+        widths=[8.0, 5.4, 2.4],
+        font_size=7.8,
     )
     b.p(
         "Pendência externa: o guia menciona grupos de 2 alunos; este grupo tem 3. A autorização do professor "

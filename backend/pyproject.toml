@@ -41,6 +41,9 @@ dev = [
     "reportlab>=4.2",
     "pillow>=10.4",
     "qrcode[pil]>=8.0",
+    "mammoth>=1.8",
+    "weasyprint>=62",
+    "beautifulsoup4>=4.12",
 ]
 
 [tool.setuptools.packages.find]
