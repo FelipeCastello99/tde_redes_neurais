@@ -6,7 +6,7 @@ COMPOSE ?= docker compose
 
 .DEFAULT_GOAL := help
 
-.PHONY: help fetch data-check venv install test lint typecheck types up down refresh build logs ps db-shell reset-db seed deliverables screenshots package clean clean-pyc
+.PHONY: help fetch data-check venv install test lint typecheck types up down refresh build logs ps db-shell reset-db seed detailed-doc deliverables screenshots package clean clean-pyc
 
 help:
 	@echo "TDE Redes Neurais — alvos disponíveis:"
@@ -27,6 +27,7 @@ help:
 	@echo "  make db-shell    Abre o psql no container do Postgres"
 	@echo "  make reset-db    Remove containers e o volume pgdata"
 	@echo "  make seed        Cria um run Demo no banco e nos artefatos"
+	@echo "  make detailed-doc Gera o DOCX técnico completo"
 	@echo "  make deliverables Gera DOCX, PDF, slides e roteiro"
 	@echo "  make screenshots  Captura as telas (requer stack no ar)"
 	@echo "  make package      Gera o zip final em dist/"
@@ -91,6 +92,9 @@ seed:
 	else \
 		$(COMPOSE) exec api python scripts/seed_demo.py; \
 	fi
+
+detailed-doc:
+	cd $(BACKEND) && ../$(VENV)/bin/python scripts/build_detailed_doc.py
 
 deliverables:
 	cd $(BACKEND) && ../$(VENV)/bin/python scripts/build_deliverables.py
