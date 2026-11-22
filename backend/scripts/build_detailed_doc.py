@@ -30,6 +30,11 @@ DARK = RGBColor(0x0F, 0x17, 0x2A)
 GREY = RGBColor(0x52, 0x65, 0x81)
 
 
+def br(value: float) -> str:
+    """Formata número no padrão brasileiro (vírgula decimal)."""
+    return f"{value:.4f}".replace(".", ",")
+
+
 def load_demo() -> tuple[dict, dict]:
     manifest = json.loads((DOCS / "backup_run" / "run.json").read_text(encoding="utf-8"))
     evaluation = json.loads(
@@ -45,6 +50,14 @@ class Builder:
 
     # ------------------------------------------------------------------ setup
     def _setup(self) -> None:
+        self.doc.core_properties.title = "TDE — Rede Neural aplicada a acidentes em rodovias federais"
+        self.doc.core_properties.author = IDENTITY
+        self.doc.core_properties.subject = "Documento técnico completo — DATATRAN 2024"
+        self.doc.core_properties.language = "pt-BR"
+        update_fields = OxmlElement("w:updateFields")
+        update_fields.set(qn("w:val"), "true")
+        self.doc.settings.element.append(update_fields)
+
         section = self.doc.sections[0]
         section.top_margin = Cm(2.0)
         section.bottom_margin = Cm(2.0)
@@ -57,6 +70,7 @@ class Builder:
         normal.font.color.rgb = DARK
         normal.paragraph_format.line_spacing = 1.12
         normal.paragraph_format.space_after = Pt(4)
+        self._set_language(normal)
 
         for name, size, color in (
             ("Heading 1", 16, TEAL),
@@ -71,6 +85,7 @@ class Builder:
             style.paragraph_format.space_before = Pt(10 if name == "Heading 1" else 8)
             style.paragraph_format.space_after = Pt(4)
             style.paragraph_format.keep_with_next = True
+            self._set_language(style)
 
         footer = section.footer.paragraphs[0]
         footer.alignment = WD_ALIGN_PARAGRAPH.CENTER
@@ -89,6 +104,13 @@ class Builder:
         for run in header.runs:
             run.font.size = Pt(8)
             run.font.color.rgb = GREY
+
+    @staticmethod
+    def _set_language(style) -> None:
+        r_pr = style.element.get_or_add_rPr()
+        lang = OxmlElement("w:lang")
+        lang.set(qn("w:val"), "pt-BR")
+        r_pr.append(lang)
 
     @staticmethod
     def _add_field(paragraph, field: str) -> None:
@@ -135,6 +157,10 @@ class Builder:
         table = self.doc.add_table(rows=1, cols=len(headers))
         table.style = "Light Grid Accent 1"
         table.alignment = WD_TABLE_ALIGNMENT.CENTER
+        tr_pr = table.rows[0]._tr.get_or_add_trPr()
+        tbl_header = OxmlElement("w:tblHeader")
+        tbl_header.set(qn("w:val"), "true")
+        tr_pr.append(tbl_header)
         hdr = table.rows[0].cells
         for i, header in enumerate(headers):
             hdr[i].text = str(header)
@@ -195,7 +221,9 @@ class Builder:
             return
         paragraph = self.doc.add_paragraph()
         paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        paragraph.add_run().add_picture(str(path), width=Cm(width_cm))
+        shape = paragraph.add_run().add_picture(str(path), width=Cm(width_cm))
+        shape._inline.docPr.set("descr", caption)
+        shape._inline.docPr.set("title", caption)
         caption_paragraph = self.doc.add_paragraph()
         caption_paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
         run = caption_paragraph.add_run(caption)
@@ -318,6 +346,11 @@ def build() -> None:
 
     b.h("Sumário", 1)
     b.toc()
+    b.p(
+        "Convenções editoriais: as figuras recebem numeração sequencial e são listadas no Apêndice I; "
+        "as tabelas são identificadas pelo título da seção e pelo contexto imediato; trechos de código "
+        "aparecem em fonte monoespaçada; os números do run Demo e do notebook são sempre identificados pela fonte."
+    )
     b.page_break()
 
     # ------------------------------------------------------------------ 1
@@ -863,22 +896,22 @@ def build() -> None:
     b.table(
         ["Métrica", "Valor"],
         [
-            ["Acurácia", f"{metrics['accuracy']:.4f}"],
-            ["F1 macro", f"{metrics['precision_recall_f1']['macro']['f1']:.4f}"],
-            ["F1 classe fatal", f"{per_class[1]['f1']:.4f}"],
-            ["ROC-AUC", f"{metrics['roc_auc']:.4f}"],
-            ["PR-AUC", f"{metrics['pr_auc']:.4f}"],
-            ["Log-loss", f"{metrics['log_loss']:.4f}"],
-            ["Brier", f"{metrics['brier_score']:.4f}"],
-            ["ECE", f"{metrics['ece']:.4f}"],
+            ["Acurácia", br(metrics['accuracy'])],
+            ["F1 macro", br(metrics['precision_recall_f1']['macro']['f1'])],
+            ["F1 classe fatal", br(per_class[1]['f1'])],
+            ["ROC-AUC", br(metrics['roc_auc'])],
+            ["PR-AUC", br(metrics['pr_auc'])],
+            ["Log-loss", br(metrics['log_loss'])],
+            ["Brier", br(metrics['brier_score'])],
+            ["ECE", br(metrics['ece'])],
         ],
         widths=[8.0, 6.0],
     )
     b.table(
         ["Classe", "Precisão", "Recall", "F1", "Suporte"],
         [
-            ["sem_vitima_fatal", f"{per_class[0]['precision']:.4f}", f"{per_class[0]['recall']:.4f}", f"{per_class[0]['f1']:.4f}", per_class[0]["support"]],
-            ["vitima_fatal", f"{per_class[1]['precision']:.4f}", f"{per_class[1]['recall']:.4f}", f"{per_class[1]['f1']:.4f}", per_class[1]["support"]],
+            ["sem_vitima_fatal", br(per_class[0]['precision']), br(per_class[0]['recall']), br(per_class[0]['f1']), per_class[0]["support"]],
+            ["vitima_fatal", br(per_class[1]['precision']), br(per_class[1]['recall']), br(per_class[1]['f1']), per_class[1]["support"]],
         ],
         widths=[5.0, 3.4, 3.2, 3.2, 3.0],
     )
@@ -1340,12 +1373,32 @@ def build() -> None:
             "Coleta de variáveis faltantes em parceria com a PRF.",
         ]
     )
-    b.h("11.3 Conclusão", 2)
+    b.h("11.3 Respostas às perguntas do guia", 2)
+    b.numbered(
+        [
+            "Qual problema foi resolvido? A estimativa da probabilidade de vítima fatal a partir do cenário registrado, com comparação entre alvo binário e 3 classes.",
+            "Por que a arquitetura escolhida faz sentido? Uma MLP tabular pequena captura interações não lineares sem exigir dados sequenciais ou espaciais; o sinal disponível não justifica uma rede maior.",
+            "A rede aprendeu? Sim: a loss de treino caiu, a validação estabilizou e o F1 fatal ficou acima do acaso. O aprendizado é parcial e limitado pela base.",
+            "Como a função de perda se comportou durante o treinamento? A weighted cross-entropy caiu de ~0,68 para ~0,40 no treino; na validação, caiu até ~0,54 e estabilizou, com early stopping na época 14.",
+            "Qual foi o resultado nos dados de teste? Acurácia 0,7788, F1 macro 0,5910, F1 fatal 0,3140 e ROC-AUC 0,8001 no notebook; no Demo, 0,7917, 0,5469, 0,2138 e 0,6747.",
+            "Houve diferença entre treinamento e teste? Sim: a loss de treino continuou caindo enquanto a de validação estabilizou, indicando overfitting; o early stopping e o modelo pequeno reduziram o problema.",
+            "Quais limitações foram identificadas? Falta de velocidade, cinto, tipo de veículo e tempo de socorro; subnotificação; causa provável; recorte de 2024; granularidade por ocorrência.",
+            "O que poderia ser modificado para melhorar o modelo? Novas variáveis, calibração, validação temporal/por UF, baselines de boosting, explicabilidade local e ajuste de threshold por custo.",
+        ]
+    )
+    b.page_break()
+
+    b.h("12. Conclusão", 1)
     b.p(
         "O objetivo didático foi cumprido: a MLP foi implementada do zero, treinada, testada e analisada, "
         "com métricas corretas e discussão honesta. O objetivo aplicado também: a aplicação permite configurar, "
         "acompanhar, comparar e simular. O resultado é um protótipo acadêmico útil para ensinar redes neurais "
         "e discutir limites de dados públicos, não uma ferramenta de decisão."
+    )
+    b.p(
+        "A principal lição é que arquitetura e métrica não substituem dados. O modelo encontrou parte do sinal, "
+        "mas o teto de desempenho é imposto pela ausência de variáveis determinantes para a letalidade. "
+        "Reconhecer esse limite é parte do resultado, não uma falha escondida."
     )
     b.page_break()
 
