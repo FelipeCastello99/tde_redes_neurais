@@ -118,6 +118,14 @@ def download(url: str, dest: Path) -> None:
                     pct = 100 * copied / total
                     print(f"\r  {human_size(copied)} / {human_size(total)} ({pct:5.1f}%)", end="")
         print()
+    except PermissionError as exc:
+        raise SystemExit(
+            "sem permissão para escrever em "
+            f"{part.parent}.\n"
+            "No Docker, ajuste HOST_UID/HOST_GID no .env (use `make env`) "
+            "ou rode o serviço data como root em uma VPS.\n"
+            f"Detalhe: {exc}"
+        ) from exc
     except (urllib.error.URLError, TimeoutError) as exc:
         part.unlink(missing_ok=True)
         raise SystemExit(f"erro no download: {exc}\nVerifique a conexão ou use --url com outro link.") from exc
@@ -246,7 +254,14 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--url", default=DOWNLOAD_URL, help="URL alternativa do arquivo zip")
     args = parser.parse_args(argv)
 
-    DATA_DIR.mkdir(parents=True, exist_ok=True)
+    try:
+        DATA_DIR.mkdir(parents=True, exist_ok=True)
+    except PermissionError as exc:
+        raise SystemExit(
+            f"sem permissão para criar {DATA_DIR}.\n"
+            "No Docker, rode `make env` e suba novamente; em VPS root use HOST_UID=0/HOST_GID=0.\n"
+            f"Detalhe: {exc}"
+        ) from exc
 
     need_download = args.force or not CSV_PATH.exists()
     if args.check and need_download and not CSV_PATH.exists():

@@ -178,6 +178,21 @@ curl -I http://localhost:3000/treinar
 Se `web` estiver `healthy`, basta recarregar com `Ctrl+Shift+R`. O alvo `make up`
 agora sobe em background; use `make logs` para acompanhar sem derrubar a stack.
 
+**`PermissionError: /app/data/raw/prf_datatran2024.zip.part`** — o serviço `data`
+roda com o UID/GID do host definido em `HOST_UID`/`HOST_GID`. Em VPS como root,
+o correto é `0:0`. O comando abaixo corrige automaticamente e recria a stack:
+
+```bash
+make env     # grava HOST_UID=$(id -u) e HOST_GID=$(id -g)
+make refresh
+```
+
+Se ainda houver arquivos de outro dono, ajuste as permissões:
+
+```bash
+chown -R $(id -u):$(id -g) backend/data backend/artifacts
+```
+
 **A API não fica saudável** — confira `make logs` e se o CSV existe em
 `backend/data/raw/datatran2024.csv`. O serviço `data` baixa automaticamente.
 

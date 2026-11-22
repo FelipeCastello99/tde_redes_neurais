@@ -6,12 +6,13 @@ COMPOSE ?= docker compose
 
 .DEFAULT_GOAL := help
 
-.PHONY: help fetch data-check venv install test lint typecheck types up down refresh build logs ps db-shell reset-db seed detailed-doc detailed-pdf deliverables screenshots package clean clean-pyc
+.PHONY: help fetch data-check venv install env test lint typecheck types up down refresh build logs ps db-shell reset-db seed detailed-doc detailed-pdf deliverables screenshots package clean clean-pyc
 
 help:
 	@echo "TDE Redes Neurais — alvos disponíveis:"
 	@echo "  make fetch       Baixa e valida o CSV do DATATRAN 2024"
 	@echo "  make data-check  Valida apenas o CSV local"
+	@echo "  make env         Cria/atualiza .env com HOST_UID/HOST_GID do host"
 	@echo "  make venv        Cria o ambiente virtual .venv na raiz"
 	@echo "  make install     Instala o backend e as dependências de desenvolvimento"
 	@echo "  make test        Roda o pytest do backend"
@@ -41,6 +42,12 @@ fetch:
 data-check:
 	cd $(BACKEND) && $(PY) scripts/fetch_data.py --check
 
+env:
+	@if [ ! -f .env ]; then cp .env.example .env; fi
+	@sed -i '/^HOST_UID=/d;/^HOST_GID=/d' .env
+	@printf 'HOST_UID=%s\nHOST_GID=%s\n' "$$(id -u)" "$$(id -g)" >> .env
+	@echo "HOST_UID=$$(id -u) HOST_GID=$$(id -g) gravados em .env"
+
 venv:
 	$(PY) -m venv $(VENV)
 
@@ -62,13 +69,13 @@ types:
 	cd $(BACKEND) && ../$(VENV)/bin/python scripts/export_openapi.py
 	cd frontend && npm run types
 
-up:
+up: env
 	$(COMPOSE) up --build -d
 
 down:
 	$(COMPOSE) down
 
-refresh:
+refresh: env
 	$(COMPOSE) down --remove-orphans
 	$(COMPOSE) up -d --build --force-recreate
 
