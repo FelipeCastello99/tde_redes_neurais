@@ -223,6 +223,10 @@ disco sincronizados.
 | `make doctor` | Compara banco × disco (órfãos e runs quebrados) |
 | `make doctor FIX=1` | Remove órfãos e linhas quebradas |
 
+Na interface, o **Dashboard** também tem o ícone de lixeira em cada linha do
+histórico. Ele abre uma confirmação e usa o mesmo `DELETE /api/runs/{id}`;
+runs em execução ficam com o botão desabilitado.
+
 Regras de segurança:
 
 - runs `queued`/`running` nunca são apagados;

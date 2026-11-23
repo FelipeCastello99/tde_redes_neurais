@@ -4,6 +4,7 @@ import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import { getRuns } from "@/lib/api";
 import { PageHeader, StatCard } from "@/components/layout";
+import { DeleteRunButton } from "@/components/runs/DeleteRunButton";
 import { Icons } from "@/components/icons";
 import { formatDate, formatTime, formatPercent } from "@/lib/format";
 
@@ -124,7 +125,7 @@ export default function DashboardPage() {
                   <th className="px-6 py-3 font-medium">Alvo</th>
                   <th className="px-6 py-3 font-medium text-right">Métricas (Teste)</th>
                   <th className="px-6 py-3 font-medium text-right">Épocas</th>
-                  <th className="px-6 py-3 font-medium"></th>
+                  <th className="px-6 py-3 font-medium text-right">Ações</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
@@ -164,15 +165,24 @@ export default function DashboardPage() {
                       <td className="px-6 py-4 text-right text-muted font-mono">
                         {r.best_epoch || r.config.model.epochs} / {r.config.model.epochs}
                       </td>
-                      <td className="px-6 py-4 text-right">
-                        {isDone && (
-                          <Link 
-                            href={`/resultados/${r.id}`}
-                            className="text-primary hover:text-primary/80 font-medium text-sm transition-colors"
-                          >
-                            Analisar →
-                          </Link>
-                        )}
+                      <td className="px-6 py-4">
+                        <div className="flex items-center justify-end gap-3">
+                          {isDone && (
+                            <Link 
+                              href={`/resultados/${r.id}`}
+                              className="text-primary hover:text-primary/80 font-medium text-sm transition-colors whitespace-nowrap"
+                            >
+                              Analisar →
+                            </Link>
+                          )}
+                          <DeleteRunButton
+                            runId={r.id}
+                            runName={r.name}
+                            disabled={r.status === 'queued' || r.status === 'running'}
+                            disabledReason="Cancele o treinamento antes de apagar"
+                            onDeleted={(id) => setRuns((current) => current.filter((run) => run.id !== id))}
+                          />
+                        </div>
                       </td>
                     </tr>
                   );
