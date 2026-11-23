@@ -6,7 +6,7 @@ COMPOSE ?= docker compose
 
 .DEFAULT_GOAL := help
 
-.PHONY: help fetch data-check venv install env test lint typecheck types up down refresh build logs ps db-shell reset-db seed detailed-doc detailed-pdf detailed-slides deliverables screenshots package clean clean-pyc
+.PHONY: help fetch data-check venv install env test lint typecheck types up down refresh build logs ps db-shell reset-db seed runs rm-run prune-runs doctor detailed-doc detailed-pdf detailed-slides deliverables screenshots package clean clean-pyc
 
 help:
 	@echo "TDE Redes Neurais — alvos disponíveis:"
@@ -28,6 +28,10 @@ help:
 	@echo "  make db-shell    Abre o psql no container do Postgres"
 	@echo "  make reset-db    Remove containers e o volume pgdata"
 	@echo "  make seed        Cria um run Demo no banco e nos artefatos"
+	@echo "  make runs        Lista os runs treinados (LIMIT=50)"
+	@echo "  make rm-run      Apaga um run: RUN_ID=<id> [YES=1]"
+	@echo "  make prune-runs  Mantém os N mais recentes: KEEP=5 [DRY=1] [STATUS=failed,canceled] [INCLUDE_DEMO=1] [YES=1]"
+	@echo "  make doctor      Compara banco e artefatos [FIX=1]"
 	@echo "  make detailed-doc Gera o DOCX técnico completo"
 	@echo "  make detailed-pdf Gera o PDF do documento completo"
 	@echo "  make detailed-slides Gera o PPTX detalhado (25 slides)"
@@ -100,6 +104,42 @@ seed:
 		cd $(BACKEND) && ../$(VENV)/bin/python scripts/seed_demo.py; \
 	else \
 		$(COMPOSE) exec api python scripts/seed_demo.py; \
+	fi
+
+runs:
+	@if [ -x "$(VENV)/bin/python" ]; then \
+		cd $(BACKEND) && ../$(VENV)/bin/python scripts/manage_runs.py list --limit $${LIMIT:-50}; \
+	else \
+		$(COMPOSE) exec api python scripts/manage_runs.py list --limit $${LIMIT:-50}; \
+	fi
+
+rm-run:
+	@if [ -z "$(RUN_ID)" ]; then \
+		echo "uso: make rm-run RUN_ID=<id> [YES=1]"; \
+		exit 1; \
+	fi
+	@if [ -x "$(VENV)/bin/python" ]; then \
+		cd $(BACKEND) && ../$(VENV)/bin/python scripts/manage_runs.py delete $(RUN_ID) $(if $(YES),--yes,); \
+	else \
+		$(COMPOSE) exec api python scripts/manage_runs.py delete $(RUN_ID) $(if $(YES),--yes,); \
+	fi
+
+prune-runs:
+	@if [ -x "$(VENV)/bin/python" ]; then \
+		cd $(BACKEND) && ../$(VENV)/bin/python scripts/manage_runs.py prune \
+			--keep $${KEEP:-5} $(if $(DRY),--dry-run,) $(if $(STATUS),--status "$(STATUS)",) \
+			$(if $(INCLUDE_DEMO),--include-demo,) $(if $(YES),--yes,); \
+	else \
+		$(COMPOSE) exec api python scripts/manage_runs.py prune \
+			--keep $${KEEP:-5} $(if $(DRY),--dry-run,) $(if $(STATUS),--status "$(STATUS)",) \
+			$(if $(INCLUDE_DEMO),--include-demo,) $(if $(YES),--yes,); \
+	fi
+
+doctor:
+	@if [ -x "$(VENV)/bin/python" ]; then \
+		cd $(BACKEND) && ../$(VENV)/bin/python scripts/manage_runs.py doctor $(if $(FIX),--fix,); \
+	else \
+		$(COMPOSE) exec api python scripts/manage_runs.py doctor $(if $(FIX),--fix,); \
 	fi
 
 detailed-doc:

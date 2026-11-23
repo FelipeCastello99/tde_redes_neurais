@@ -197,11 +197,39 @@ chown -R $(id -u):$(id -g) backend/data backend/artifacts
 `backend/data/raw/datatran2024.csv`. O serviço `data` baixa automaticamente.
 
 **Quero começar do zero** — `make reset-db` remove o volume `pgdata`; os
-artefatos em `backend/artifacts/` continuam no host. Para apagar também:
+artefatos em `backend/artifacts/` continuam no host. Depois de recriar a stack,
+limpe o que virou órfão:
 
 ```bash
-rm -rf backend/artifacts/runs
+make doctor        # lista pastas sem registro no banco
+make doctor FIX=1  # remove os órfãos
 ```
+
+## Manutenção de runs
+
+Os modelos treinados ficam em `backend/artifacts/runs/<id>/` **e** têm uma linha
+na tabela `runs`. Use os comandos abaixo em vez de `rm -rf`: eles mantêm banco e
+disco sincronizados.
+
+| Comando | O que faz |
+|---|---|
+| `make runs` | Lista id, data, status, alvo, F1 fatal e tamanho em disco |
+| `make runs LIMIT=100` | Lista mais runs |
+| `make rm-run RUN_ID=91b4c067` | Apaga **um** run (aceita prefixo único) |
+| `make rm-run RUN_ID=91b4c067 YES=1` | Apaga sem pedir confirmação |
+| `make prune-runs DRY=1` | Mostra o que seria apagado, sem apagar |
+| `make prune-runs KEEP=5` | Mantém os 5 mais recentes e apaga o resto |
+| `make prune-runs KEEP=5 STATUS=failed,canceled YES=1` | Limpa só runs que falharam/cancelaram |
+| `make doctor` | Compara banco × disco (órfãos e runs quebrados) |
+| `make doctor FIX=1` | Remove órfãos e linhas quebradas |
+
+Regras de segurança:
+
+- runs `queued`/`running` nunca são apagados;
+- o run `Demo — PRF 2024` do `make seed` é preservado no `prune` (use
+  `INCLUDE_DEMO=1` para incluí-lo);
+- `prune` pede confirmação; em script use `YES=1`;
+- `make reset-db` apaga o banco mas **não** os artefatos — rode `make doctor` depois.
 
 **Mudei dependências** — `make build` reconstrói as imagens; `make up` já faz
 build quando necessário.
