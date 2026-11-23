@@ -51,6 +51,7 @@ export function AccidentForm({
 
   const labelOverrides: Record<string, string> = {
     tracado_via: 'TRACADO DA VIA (1º TERMO)',
+    veiculos: 'QUANTIDADE DE VEÍCULOS',
   };
 
   // A API expõe tracado_principal; o formulário envia tracado_via porque
@@ -122,7 +123,7 @@ export function AccidentForm({
                     // É numérico ou hora
                     if (field === 'horario') {
                       return (
-                        <FieldWrapper key={field} label="HORÁRIO">
+                        <FieldWrapper key={field} label={labelOverrides[field] || "HORÁRIO"}>
                           <input type="time" step="1" {...methods.register(`features.${field}`)} className="w-full px-3 py-2 bg-bg border border-border rounded-md text-sm" />
                         </FieldWrapper>
                       );
@@ -131,7 +132,7 @@ export function AccidentForm({
                       <NumberField 
                         key={field}
                         name={`features.${field}`}
-                        label={field.replace('_', ' ').toUpperCase()}
+                        label={labelOverrides[field] || field.replace('_', ' ').toUpperCase()}
                         min={0}
                         step="any"
                       />
