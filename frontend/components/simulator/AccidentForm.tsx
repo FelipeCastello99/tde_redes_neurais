@@ -49,6 +49,20 @@ export function AccidentForm({
     regional: ['regional', 'delegacia', 'uop']
   };
 
+  const labelOverrides: Record<string, string> = {
+    tracado_via: 'TRACADO DA VIA (1º TERMO)',
+  };
+
+  // A API expõe tracado_principal; o formulário envia tracado_via porque
+  // feature_frame aplica a mesma redução (primeiro termo antes de ';').
+  const categoryKey = (field: string) => (field === 'tracado_via' ? 'tracado_principal' : field);
+
+  // Fallback para APIs antigas que ainda não expõem tracado_principal.
+  const TRACADO_FALLBACK = [
+    'Reta', 'Curva', 'Declive', 'Aclive', 'Interseção de Vias', 'Rotatória',
+    'Retorno Regulamentado', 'Em Obras', 'Viaduto', 'Ponte', 'Desvio Temporário', 'Túnel',
+  ];
+
   const onSubmit = (data: any) => {
     onSimulate(data.runId, data.features);
   };
@@ -87,7 +101,9 @@ export function AccidentForm({
               <h3 className="text-xs font-bold text-muted uppercase tracking-wider">{group}</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {fields.map(field => {
-                  const metaField = meta.categories && meta.categories[field];
+                  const metaField =
+                    (meta.categories && meta.categories[categoryKey(field)]) ||
+                    (field === 'tracado_via' ? TRACADO_FALLBACK : null);
                   
                   if (metaField) {
                     // É categórico
@@ -95,7 +111,7 @@ export function AccidentForm({
                       <SelectField 
                         key={field}
                         name={`features.${field}`}
-                        label={field.replace('_', ' ').toUpperCase()}
+                        label={labelOverrides[field] || field.replace('_', ' ').toUpperCase()}
                         options={[
                           { value: "", label: "Selecione..." },
                           ...metaField.map((val: string) => ({ value: val, label: val }))

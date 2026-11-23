@@ -79,6 +79,19 @@ def _dataset_bundle() -> dict[str, Any]:
                 values = raw[column].dropna().astype(str).unique().tolist()
                 categories[column] = sorted(values)
 
+    if "tracado_via" in raw.columns:
+        principal = (
+            raw["tracado_via"]
+            .dropna()
+            .astype(str)
+            .str.split(";", n=1)
+            .str[0]
+            .str.strip()
+        )
+        categories["tracado_principal"] = sorted(
+            value for value in principal.unique().tolist() if value
+        )
+
     target_counts: dict[str, list[int]] = {}
     for target in TARGETS:
         labels = build_target(raw, target)

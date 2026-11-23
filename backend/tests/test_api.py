@@ -28,6 +28,8 @@ def test_meta_contract() -> None:
     assert "categories" in payload
     assert payload["targets"] == ["fatal_binario", "gravidade_3_classes"]
     assert "uf" in payload["categories"]
+    assert "tracado_principal" in payload["categories"]
+    assert "Curva" in payload["categories"]["tracado_principal"]
     assert payload["defaults"]["data"]["target"] == "fatal_binario"
 
 

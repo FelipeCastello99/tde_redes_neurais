@@ -21,7 +21,7 @@ const meta = {
     uf: ["SP", "MG"],
     dia_semana: ["segunda-feira", "sábado"],
     tipo_pista: ["Simples", "Dupla"],
-    tracado_via: ["Reta", "Curva"],
+    tracado_principal: ["Reta", "Curva"],
     uso_solo: ["Sim", "Não"],
     sentido_via: ["Crescente", "Decrescente"],
     causa_acidente: ["Ultrapassagem Indevida", "Velocidade incompatível"],
@@ -55,6 +55,7 @@ test("simulador retorna probabilidade", async ({ page }) => {
   await page.goto("/simulador");
   await expect(page.locator("select").first()).toHaveValue("run-sim-1");
   await expect(page.locator("select").first()).toContainText("Modelo de Teste");
+  await expect(page.getByText("TRACADO DA VIA (1º TERMO)")).toBeVisible();
 
   await page.getByRole("button", { name: /Estimar Gravidade/i }).click();
 

@@ -27,6 +27,7 @@ async function main() {
 
   for (const [name, route, marker] of shots) {
     await page.goto(`${baseURL}${route}`, { waitUntil: "networkidle" });
+    await page.addStyleTag({ content: "header{position:static!important}.sticky{position:static!important}" });
     await page.getByText(marker, { exact: false }).first().waitFor({ timeout: 30_000 });
     await page.waitForTimeout(800);
     await page.screenshot({ path: path.join(outDir, `${name}.png`), fullPage: true });
@@ -34,6 +35,7 @@ async function main() {
   }
 
   await page.goto(`${baseURL}/simulador?run=${run.id}`, { waitUntil: "networkidle" });
+  await page.addStyleTag({ content: "header{position:static!important}.sticky{position:static!important}" });
   await page.getByRole("button", { name: /Estimar Gravidade/i }).click();
   await page.getByText("Previsão do Modelo").waitFor({ timeout: 30_000 });
   await page.waitForTimeout(800);
