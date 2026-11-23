@@ -6,7 +6,7 @@ COMPOSE ?= docker compose
 
 .DEFAULT_GOAL := help
 
-.PHONY: help fetch data-check venv install env test lint typecheck types up down refresh build logs ps db-shell reset-db seed detailed-doc detailed-pdf deliverables screenshots package clean clean-pyc
+.PHONY: help fetch data-check venv install env test lint typecheck types up down refresh build logs ps db-shell reset-db seed detailed-doc detailed-pdf detailed-slides deliverables screenshots package clean clean-pyc
 
 help:
 	@echo "TDE Redes Neurais — alvos disponíveis:"
@@ -30,6 +30,7 @@ help:
 	@echo "  make seed        Cria um run Demo no banco e nos artefatos"
 	@echo "  make detailed-doc Gera o DOCX técnico completo"
 	@echo "  make detailed-pdf Gera o PDF do documento completo"
+	@echo "  make detailed-slides Gera o PPTX detalhado (25 slides)"
 	@echo "  make deliverables Gera DOCX, PDF, slides e roteiro"
 	@echo "  make screenshots  Captura as telas (requer stack no ar)"
 	@echo "  make package      Gera o zip final em dist/"
@@ -107,13 +108,16 @@ detailed-doc:
 detailed-pdf: detailed-doc
 	cd $(BACKEND) && ../$(VENV)/bin/python scripts/export_detailed_pdf.py
 
+detailed-slides:
+	cd $(BACKEND) && ../$(VENV)/bin/python scripts/build_detailed_slides.py
+
 deliverables:
 	cd $(BACKEND) && ../$(VENV)/bin/python scripts/build_deliverables.py
 
 screenshots:
 	cd frontend && SCREENSHOT_BASE_URL=$${SCREENSHOT_BASE_URL:-http://localhost:3000} node scripts/capture_screenshots.mjs
 
-package: detailed-pdf deliverables
+package: detailed-pdf detailed-slides deliverables
 	cd $(BACKEND) && ../$(VENV)/bin/python scripts/package_delivery.py
 
 clean: clean-pyc
